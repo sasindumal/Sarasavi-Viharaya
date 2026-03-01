@@ -1,0 +1,279 @@
+.page {
+    position: relative;
+}
+
+.hero {
+    position: relative;
+    height: 40vh;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--lotus-parchment) 0%, var(--lotus-parchment-light) 50%, var(--nirvana-white) 100%);
+    margin-top: -80px;
+    padding-top: 80px;
+}
+
+.heroContent {
+    text-align: center;
+    padding: 0 var(--space-xl);
+}
+
+.heroIcon {
+    font-size: 3rem;
+    color: var(--sacred-gold);
+    margin-bottom: var(--space-md);
+    animation: float 4s ease-in-out infinite;
+}
+
+.heroContent h1 {
+    margin-bottom: var(--space-md);
+}
+
+.heroContent p {
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+.controls {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-2xl);
+}
+
+.searchBox {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: var(--glass-bg);
+    border: 1px solid rgba(52, 53, 52, 0.1);
+    border-radius: var(--radius-full);
+    padding: 0.5rem 1rem;
+    flex: 1;
+}
+
+.searchBox input {
+    border: none;
+    background: transparent;
+    font-size: 0.9rem;
+    outline: none;
+    width: 100%;
+    color: var(--void-ink);
+}
+
+.searchBox svg {
+    color: var(--stone-charcoal);
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+.sortSelect {
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(52, 53, 52, 0.1);
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    background: var(--glass-bg);
+    cursor: pointer;
+    color: var(--void-ink);
+}
+
+.sectionLabel {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--sacred-gold-dark);
+    margin-bottom: var(--space-lg);
+    font-weight: 600;
+}
+
+.upcoming {
+    margin-bottom: var(--space-2xl);
+}
+
+.upcomingCard {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-xl);
+    background: linear-gradient(135deg, rgba(223, 82, 42, 0.04), rgba(245, 185, 38, 0.08));
+    border: 1px solid rgba(223, 82, 42, 0.15);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: var(--void-ink);
+    transition: all var(--transition-base);
+    margin-bottom: var(--space-md);
+}
+
+.upcomingCard:hover {
+    transform: translateX(8px);
+    box-shadow: var(--shadow-md);
+}
+
+.upcomingInfo {
+    flex: 1;
+}
+
+.upcomingInfo h3 {
+    margin: var(--space-sm) 0;
+    font-family: var(--font-heading);
+}
+
+.upcomingInfo p {
+    font-size: 0.9rem;
+    color: var(--stone-charcoal);
+    margin-bottom: var(--space-sm);
+}
+
+.cardArrow {
+    color: var(--sacred-gold);
+    font-size: 1.2rem;
+    transition: transform var(--transition-base);
+    flex-shrink: 0;
+}
+
+.upcomingCard:hover .cardArrow,
+.timelineCard:hover .cardArrow {
+    transform: translateX(6px);
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding-left: 40px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--sacred-gold), var(--saffron-amber), var(--sacred-gold));
+}
+
+.timelineItem {
+    position: relative;
+    margin-bottom: var(--space-lg);
+}
+
+.timelineDot {
+    position: absolute;
+    left: -33px;
+    top: 1rem;
+    width: 28px;
+    height: 28px;
+    background: var(--sacred-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: white;
+    box-shadow: var(--shadow-gold);
+    z-index: 2;
+}
+
+.timelineCard {
+    display: flex;
+    align-items: stretch;
+    text-decoration: none;
+    color: var(--void-ink);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(245, 185, 38, 0.1);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-base);
+}
+
+.timelineCard:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(245, 185, 38, 0.3);
+}
+
+.timelineImage {
+    width: 200px;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.timelineImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.timelineCard:hover .timelineImage img {
+    transform: scale(1.08);
+}
+
+.photoBadge {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.timelineInfo {
+    padding: var(--space-lg);
+    flex: 1;
+}
+
+.timelineDate {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: var(--sacred-gold-dark);
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+}
+
+.timelineInfo h3 {
+    font-size: 1.05rem;
+    margin-bottom: var(--space-xs);
+    font-family: var(--font-heading);
+}
+
+.timelineInfo p {
+    font-size: 0.88rem;
+    color: var(--stone-charcoal);
+    line-height: 1.6;
+}
+
+.duration {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: var(--stone-charcoal);
+    margin-top: var(--space-sm);
+}
+
+@media (max-width: 768px) {
+    .timelineCard {
+        flex-direction: column;
+    }
+
+    .timelineImage {
+        width: 100%;
+        height: 160px;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+}

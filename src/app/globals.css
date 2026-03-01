@@ -1,0 +1,557 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+:root {
+  /* === COLOR PALETTE === */
+  --lotus-parchment: #FCDFA2;
+  --sacred-gold: #F5B926;
+  --saffron-amber: #ED9F2D;
+  --void-ink: #1A1919;
+  --vermillion-temple: #DF522A;
+  --stone-charcoal: #343534;
+  --nirvana-white: #FFFFFE;
+
+  /* Derived colors */
+  --lotus-parchment-light: #fef3d7;
+  --lotus-parchment-dark: #f5d280;
+  --sacred-gold-light: #fad564;
+  --sacred-gold-dark: #d9a01e;
+  --glass-bg: rgba(255, 255, 254, 0.65);
+  --glass-bg-strong: rgba(255, 255, 254, 0.85);
+  --glass-border: rgba(245, 185, 38, 0.25);
+  --glass-shadow: rgba(26, 25, 25, 0.08);
+  --overlay-dark: rgba(26, 25, 25, 0.6);
+
+  /* === TYPOGRAPHY === */
+  --font-heading: 'Cinzel', 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* === SPACING === */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --space-4xl: 6rem;
+
+  /* === BORDERS === */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* === TRANSITIONS === */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --transition-spring: 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* === SHADOWS === */
+  --shadow-sm: 0 1px 3px rgba(26,25,25,0.06), 0 1px 2px rgba(26,25,25,0.04);
+  --shadow-md: 0 4px 12px rgba(26,25,25,0.08), 0 2px 4px rgba(26,25,25,0.04);
+  --shadow-lg: 0 12px 40px rgba(26,25,25,0.12), 0 4px 12px rgba(26,25,25,0.06);
+  --shadow-xl: 0 20px 60px rgba(26,25,25,0.15), 0 8px 20px rgba(26,25,25,0.08);
+  --shadow-gold: 0 4px 20px rgba(245, 185, 38, 0.25);
+  --shadow-gold-lg: 0 8px 40px rgba(245, 185, 38, 0.35);
+}
+
+/* === RESET & BASE === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--void-ink);
+  background: linear-gradient(135deg, var(--nirvana-white) 0%, var(--lotus-parchment-light) 50%, var(--nirvana-white) 100%);
+  min-height: 100vh;
+  line-height: 1.7;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: 1.3;
+  color: var(--void-ink);
+  letter-spacing: 0.02em;
+}
+
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; }
+h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 600; }
+h3 { font-size: clamp(1.2rem, 3vw, 1.75rem); font-weight: 600; }
+h4 { font-size: clamp(1.1rem, 2.5vw, 1.35rem); font-weight: 500; }
+
+p {
+  line-height: 1.8;
+  color: var(--stone-charcoal);
+}
+
+a {
+  color: var(--sacred-gold-dark);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a:hover {
+  color: var(--saffron-amber);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+/* === GLASSMORPHISM UTILITIES === */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 185, 38, 0.15);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  overflow: hidden;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(245, 185, 38, 0.35);
+}
+
+/* === BUTTONS === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  transition: all var(--transition-base);
+  border: none;
+  outline: none;
+  text-transform: uppercase;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--sacred-gold) 0%, var(--saffron-amber) 100%);
+  color: var(--void-ink);
+  box-shadow: var(--shadow-gold);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-gold-lg);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--sacred-gold-dark);
+  border: 2px solid var(--sacred-gold);
+}
+.btn-secondary:hover {
+  background: var(--sacred-gold);
+  color: var(--void-ink);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, var(--vermillion-temple), #c44424);
+  color: var(--nirvana-white);
+}
+.btn-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(223, 82, 42, 0.35);
+}
+
+.btn-sm {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.85rem;
+}
+
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* === CONTAINER === */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-xl);
+}
+
+.container-sm {
+  max-width: 900px;
+}
+
+.container-lg {
+  max-width: 1440px;
+}
+
+/* === SECTION === */
+.section {
+  padding: var(--space-4xl) 0;
+  position: relative;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: var(--space-3xl);
+}
+
+.section-header h2 {
+  margin-bottom: var(--space-md);
+  position: relative;
+  display: inline-block;
+}
+
+.section-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--sacred-gold), transparent);
+  border-radius: 2px;
+}
+
+.section-header p {
+  max-width: 600px;
+  margin: var(--space-lg) auto 0;
+  font-size: 1.05rem;
+  opacity: 0.8;
+}
+
+/* === DECORATIVE ELEMENTS === */
+.gold-divider {
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--sacred-gold), transparent);
+  margin: var(--space-lg) auto;
+}
+
+.bodhi-ornament {
+  display: inline-block;
+  color: var(--sacred-gold);
+  font-size: 1.5rem;
+  opacity: 0.6;
+}
+
+/* Bodhi leaf SVG background pattern */
+.bodhi-pattern {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Cpath d='M40 10 C35 20 25 35 25 50 C25 62 32 70 40 70 C48 70 55 62 55 50 C55 35 45 20 40 10Z' fill='%23F5B926' /%3E%3Cline x1='40' y1='15' x2='40' y2='65' stroke='%23ED9F2D' stroke-width='0.5' /%3E%3C/svg%3E");
+  background-size: 80px 80px;
+}
+
+/* === FORM INPUTS === */
+.input-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid rgba(52, 53, 52, 0.15);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: rgba(255, 255, 254, 0.8);
+  transition: all var(--transition-fast);
+  color: var(--void-ink);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--sacred-gold);
+  box-shadow: 0 0 0 3px rgba(245, 185, 38, 0.15);
+}
+
+.input-field::placeholder {
+  color: var(--stone-charcoal);
+  opacity: 0.5;
+}
+
+textarea.input-field {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: var(--space-xs);
+  color: var(--stone-charcoal);
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 185, 38, 0.4); }
+  50% { box-shadow: 0 0 0 15px rgba(245, 185, 38, 0); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bodhiLeafFall {
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.7; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--lotus-parchment-light);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--sacred-gold);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--saffron-amber);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--space-md);
+  }
+  .section {
+    padding: var(--space-2xl) 0;
+  }
+  .btn {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* === BADGE === */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badge-gold {
+  background: linear-gradient(135deg, rgba(245,185,38,0.15), rgba(237,159,45,0.15));
+  color: var(--sacred-gold-dark);
+  border: 1px solid rgba(245,185,38,0.3);
+}
+
+.badge-red {
+  background: rgba(223,82,42,0.1);
+  color: var(--vermillion-temple);
+  border: 1px solid rgba(223,82,42,0.2);
+}
+
+/* === TABS === */
+.tabs {
+  display: flex;
+  gap: var(--space-xs);
+  background: rgba(252, 223, 162, 0.3);
+  padding: 4px;
+  border-radius: var(--radius-full);
+  width: fit-content;
+}
+
+.tab {
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--stone-charcoal);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.tab.active {
+  background: var(--sacred-gold);
+  color: var(--void-ink);
+  box-shadow: var(--shadow-sm);
+}
+
+.tab:hover:not(.active) {
+  background: rgba(245, 185, 38, 0.15);
+}
+
+/* === TABLE === */
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(52,53,52,0.08);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th {
+  background: rgba(252, 223, 162, 0.3);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--stone-charcoal);
+  border-bottom: 1px solid rgba(52,53,52,0.08);
+}
+
+table td {
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(52,53,52,0.05);
+}
+
+table tr:hover td {
+  background: rgba(252, 223, 162, 0.1);
+}
+
+/* === TOGGLE SWITCH === */
+.toggle {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  cursor: pointer;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--stone-charcoal);
+  border-radius: 26px;
+  transition: var(--transition-base);
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  top: 3px;
+  left: 3px;
+  transition: var(--transition-base);
+}
+
+.toggle input:checked + .toggle-slider {
+  background: var(--sacred-gold);
+}
+
+.toggle input:checked + .toggle-slider::before {
+  transform: translateX(22px);
+}
+
+/* === LOADING SKELETON === */
+.skeleton {
+  background: linear-gradient(90deg, rgba(252,223,162,0.2) 25%, rgba(252,223,162,0.4) 50%, rgba(252,223,162,0.2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}

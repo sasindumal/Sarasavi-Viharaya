@@ -1,0 +1,148 @@
+.footer {
+    position: relative;
+    background: linear-gradient(180deg, var(--lotus-parchment-light) 0%, var(--lotus-parchment) 100%);
+    margin-top: var(--space-4xl);
+}
+
+.decorBorder {
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--sacred-gold), var(--saffron-amber), var(--sacred-gold), transparent);
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-xl) var(--space-xl);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: var(--space-2xl);
+}
+
+.brand {}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: var(--space-md);
+}
+
+.logoIcon {
+    font-size: 2rem;
+    color: var(--sacred-gold);
+}
+
+.logoTitle {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--void-ink);
+    margin: 0;
+}
+
+.logoSub {
+    font-size: 0.75rem;
+    color: var(--stone-charcoal);
+    opacity: 0.7;
+    margin: 0;
+}
+
+.description {
+    font-size: 0.9rem;
+    color: var(--stone-charcoal);
+    line-height: 1.7;
+}
+
+.links h4 {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--void-ink);
+    margin-bottom: var(--space-md);
+}
+
+.links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.links li {
+    margin-bottom: 0.5rem;
+}
+
+.links a {
+    font-size: 0.9rem;
+    color: var(--stone-charcoal);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.links a:hover {
+    color: var(--sacred-gold-dark);
+}
+
+.social h4 {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--void-ink);
+    margin-bottom: var(--space-md);
+}
+
+.socialLinks {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.socialIcon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 254, 0.8);
+    border: 1px solid rgba(245, 185, 38, 0.2);
+    color: var(--sacred-gold-dark);
+    font-size: 1.2rem;
+    transition: all var(--transition-base);
+    text-decoration: none;
+}
+
+.socialIcon:hover {
+    background: var(--sacred-gold);
+    color: var(--void-ink);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-gold);
+}
+
+.bottom {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid rgba(245, 185, 38, 0.2);
+    text-align: center;
+}
+
+.bottom p {
+    font-size: 0.85rem;
+    color: var(--stone-charcoal);
+    opacity: 0.7;
+}
+
+.quote {
+    font-family: var(--font-heading);
+    font-style: italic;
+    margin-top: 0.5rem !important;
+    opacity: 0.5 !important;
+    font-size: 0.8rem !important;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+    }
+}

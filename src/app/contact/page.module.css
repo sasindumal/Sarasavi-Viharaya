@@ -1,0 +1,140 @@
+.page {
+    position: relative;
+}
+
+.hero {
+    position: relative;
+    height: 40vh;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--lotus-parchment) 0%, var(--lotus-parchment-light) 50%, var(--nirvana-white) 100%);
+    margin-top: -80px;
+    padding-top: 80px;
+}
+
+.heroContent {
+    text-align: center;
+    padding: 0 var(--space-xl);
+}
+
+.heroIcon {
+    font-size: 3rem;
+    color: var(--sacred-gold);
+    margin-bottom: var(--space-md);
+    animation: float 4s ease-in-out infinite;
+}
+
+.heroContent h1 {
+    margin-bottom: var(--space-md);
+}
+
+.heroContent p {
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2xl);
+    align-items: start;
+}
+
+.methods h2 {
+    margin-bottom: var(--space-xl);
+}
+
+.methodCards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.methodCard {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(245, 185, 38, 0.1);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: var(--void-ink);
+    transition: all var(--transition-base);
+}
+
+.methodCard:hover {
+    transform: translateX(8px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(245, 185, 38, 0.3);
+}
+
+.methodIcon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.methodCard h4 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--stone-charcoal);
+    opacity: 0.7;
+    margin-bottom: 2px;
+}
+
+.methodCard span {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--void-ink);
+}
+
+.location {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+    padding: var(--space-lg);
+    background: rgba(252, 223, 162, 0.15);
+    border-radius: var(--radius-lg);
+}
+
+.locIcon {
+    font-size: 1.5rem;
+    color: var(--sacred-gold);
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.location h4 {
+    font-size: 0.9rem;
+    margin-bottom: var(--space-xs);
+}
+
+.location p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.formCard {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(245, 185, 38, 0.12);
+    border-radius: var(--radius-xl);
+    padding: var(--space-2xl);
+}
+
+.formCard h2 {
+    margin-bottom: var(--space-xl);
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
