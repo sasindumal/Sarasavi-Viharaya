@@ -242,7 +242,7 @@ export default function HomePage() {
           >
             <GiLotusFlower className={styles.quoteIcon} />
             <blockquote className={styles.quote}>
-              &ldquo;Thousands of candles can be lighted from a single candle, and the life of the candle will not be shortened. Happiness never decreases by being shared.&rdquo;
+              &ldquo;All that we are is the result of what we have thought: it is founded on our thoughts and made up of our thoughts.&rdquo;
             </blockquote>
             <cite className={styles.quoteCite}>— Lord Buddha</cite>
           </motion.div>
