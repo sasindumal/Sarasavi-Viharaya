@@ -5,16 +5,43 @@
     right: 0;
     z-index: 100;
     padding: 1rem 0;
+    background: linear-gradient(180deg, rgba(26, 25, 25, 0.6) 0%, rgba(26, 25, 25, 0.3) 60%, transparent 100%);
     transition: all var(--transition-base);
 }
 
 .scrolled {
-    background: rgba(255, 255, 254, 0.85);
+    background: rgba(255, 255, 254, 0.92);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(245, 185, 38, 0.15);
     box-shadow: 0 2px 20px rgba(26, 25, 25, 0.05);
     padding: 0.6rem 0;
+}
+
+.scrolled .logo {
+    color: var(--void-ink);
+}
+
+.scrolled .logoSubtitle {
+    color: var(--stone-charcoal);
+}
+
+.scrolled .navLink {
+    color: var(--stone-charcoal);
+}
+
+.scrolled .navLink:hover {
+    color: var(--sacred-gold-dark);
+    background: rgba(245, 185, 38, 0.08);
+}
+
+.scrolled .active {
+    color: var(--sacred-gold-dark);
+    background: rgba(245, 185, 38, 0.12);
+}
+
+.scrolled .menuBtn {
+    color: var(--void-ink);
 }
 
 .container {
@@ -31,7 +58,7 @@
     align-items: center;
     gap: 0.75rem;
     text-decoration: none;
-    color: var(--void-ink);
+    color: var(--nirvana-white, #fffffe);
 }
 
 .logoIcon {
@@ -55,7 +82,7 @@
 
 .logoSubtitle {
     font-size: 0.7rem;
-    color: var(--stone-charcoal);
+    color: rgba(255, 255, 254, 0.75);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     opacity: 0.7;
@@ -71,7 +98,7 @@
     padding: 0.5rem 0.85rem;
     font-size: 0.88rem;
     font-weight: 500;
-    color: var(--stone-charcoal);
+    color: rgba(255, 255, 254, 0.9);
     border-radius: var(--radius-full);
     transition: all var(--transition-fast);
     text-decoration: none;
@@ -79,13 +106,13 @@
 }
 
 .navLink:hover {
-    color: var(--sacred-gold-dark);
-    background: rgba(245, 185, 38, 0.08);
+    color: var(--sacred-gold);
+    background: rgba(245, 185, 38, 0.15);
 }
 
 .active {
-    color: var(--sacred-gold-dark);
-    background: rgba(245, 185, 38, 0.12);
+    color: var(--sacred-gold);
+    background: rgba(245, 185, 38, 0.2);
     font-weight: 600;
 }
 
@@ -94,7 +121,7 @@
     background: none;
     border: none;
     font-size: 1.6rem;
-    color: var(--void-ink);
+    color: var(--nirvana-white, #fffffe);
     cursor: pointer;
     padding: 0.25rem;
 }
@@ -124,6 +151,17 @@
         padding: 0.75rem 1rem;
         font-size: 1rem;
         border-radius: var(--radius-md);
+        color: var(--stone-charcoal);
+    }
+
+    .navLink:hover {
+        color: var(--sacred-gold-dark);
+        background: rgba(245, 185, 38, 0.08);
+    }
+
+    .active {
+        color: var(--sacred-gold-dark);
+        background: rgba(245, 185, 38, 0.12);
     }
 
     .menuBtn {
