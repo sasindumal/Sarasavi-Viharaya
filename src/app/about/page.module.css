@@ -95,8 +95,48 @@
     line-height: 1.6;
 }
 
+.sectionIcon {
+    vertical-align: -3px;
+    margin-right: var(--space-xs);
+    color: var(--sacred-gold);
+}
+
+.mapContainer {
+    margin-top: var(--space-lg);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.mapContainer iframe {
+    display: block;
+}
+
+.mapLink {
+    display: inline-block;
+    margin-top: var(--space-lg);
+    padding: var(--space-sm) var(--space-xl);
+    background: var(--sacred-gold);
+    color: var(--void-ink);
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.mapLink:hover {
+    background: var(--sacred-gold-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 185, 38, 0.4);
+}
+
 @media (max-width: 768px) {
     .valuesGrid {
         grid-template-columns: 1fr;
+    }
+
+    .mapContainer iframe {
+        height: 300px;
     }
 }

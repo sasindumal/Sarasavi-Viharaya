@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { GiLotusFlower, GiMeditation, GiTempleGate } from 'react-icons/gi';
-import { IoLeafOutline, IoPeopleOutline, IoHeartOutline, IoBookOutline } from 'react-icons/io5';
+import { IoLeafOutline, IoPeopleOutline, IoHeartOutline, IoBookOutline, IoLocationOutline } from 'react-icons/io5';
 import styles from './page.module.css';
 
 export default function AboutPage() {
@@ -52,6 +52,33 @@ export default function AboutPage() {
                         <p>
                             Under the guidance of Eng. Saliya Sampath (Senior Treasurer) and the advisory committee, the society continues to maintain and develop Sarasavi Viharaya while promoting the Dhamma among the university community.
                         </p>
+                    </motion.div>
+
+                    <motion.div className={styles.card} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ marginTop: 'var(--space-2xl)' }}>
+                        <h2><IoLocationOutline className={styles.sectionIcon} /> Our Location</h2>
+                        <p>
+                            Sarasavi Viharaya is located within the Kilinochchi premises of the University of Jaffna, at the northern boundary of the university&apos;s spiritual hub.
+                        </p>
+                        <div className={styles.mapContainer}>
+                            <iframe
+                                src="https://www.google.com/maps?q=8CG2%2BRHJ+Buddhist+Temple+-+Kilinochchi+Premises,+University+of+Jaffna,+Iranamadu,+Ariviyal+Nagar&output=embed"
+                                width="100%"
+                                height="450"
+                                style={{ border: 0, borderRadius: 'var(--radius-lg)' }}
+                                allowFullScreen
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                                title="Sarasavi Viharaya Location"
+                            />
+                        </div>
+                        <a
+                            href="https://maps.app.goo.gl/hqdbkGyMgZFUbsmD7?g_st=ic"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.mapLink}
+                        >
+                            Open in Google Maps
+                        </a>
                     </motion.div>
 
                     <motion.div className={styles.card} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ marginTop: 'var(--space-2xl)' }}>
