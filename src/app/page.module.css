@@ -51,6 +51,10 @@
   text-align: center;
   max-width: 800px;
   padding: 0 var(--space-xl);
+  width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .heroLotus {
@@ -63,7 +67,7 @@
 
 .heroTitle {
   font-family: var(--font-heading);
-  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-size: clamp(1.8rem, 6vw, 4.5rem);
   color: var(--nirvana-white);
   font-weight: 800;
   text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
@@ -73,19 +77,20 @@
 
 .heroSubtitle {
   font-family: var(--font-heading);
-  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  font-size: clamp(0.85rem, 2.2vw, 1.4rem);
   color: var(--sacred-gold);
   font-weight: 500;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: var(--space-lg);
 }
 
 .heroDesc {
-  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+  font-size: clamp(0.85rem, 1.5vw, 1.1rem);
   color: rgba(255, 255, 254, 0.85);
   line-height: 1.8;
   margin-bottom: var(--space-xl);
+  padding: 0 var(--space-sm);
 }
 
 .heroBtns {
@@ -333,6 +338,22 @@
 }
 
 @media (max-width: 768px) {
+  .heroContent {
+    padding: 0 var(--space-md);
+  }
+
+  .heroTitle {
+    letter-spacing: 0.02em;
+  }
+
+  .heroSubtitle {
+    letter-spacing: 0.06em;
+  }
+
+  .heroDesc {
+    padding: 0;
+  }
+
   .statsGrid {
     grid-template-columns: repeat(2, 1fr);
   }
