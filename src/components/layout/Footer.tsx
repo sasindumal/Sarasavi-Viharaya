@@ -46,16 +46,16 @@ export default function Footer() {
                     <div className={styles.social}>
                         <h4>Connect With Us</h4>
                         <div className={styles.socialLinks}>
-                            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="YouTube">
+                            <a href="https://www.youtube.com/@thalaranedamsaknada4502" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="YouTube">
                                 <IoLogoYoutube />
                             </a>
-                            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="Facebook">
+                            <a href="https://web.facebook.com/JaffnaUniYMBA" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="Facebook">
                                 <IoLogoFacebook />
                             </a>
-                            <a href="mailto:sarasaviviharaya@gmail.com" className={styles.socialIcon} aria-label="Email">
+                            <a href="mailto:thalaranedamsaknada@gmail.com" className={styles.socialIcon} aria-label="Email">
                                 <IoMail />
                             </a>
-                            <a href="tel:+94771234567" className={styles.socialIcon} aria-label="Phone">
+                            <a href="tel:+94776993908" className={styles.socialIcon} aria-label="Phone">
                                 <IoCall />
                             </a>
                         </div>

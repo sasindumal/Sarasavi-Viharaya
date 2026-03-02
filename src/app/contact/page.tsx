@@ -2,14 +2,14 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { IoLogoYoutube, IoLogoFacebook, IoMail, IoCall, IoLocationOutline, IoSend, IoCheckmarkCircleOutline } from 'react-icons/io5';
+import { IoLogoYoutube, IoLogoFacebook, IoMail, IoCall, IoLocationOutline, IoSend, IoCheckmarkCircleOutline, IoQrCodeOutline } from 'react-icons/io5';
 import styles from './page.module.css';
 
 const contactMethods = [
-    { icon: <IoLogoYoutube />, label: 'YouTube', value: 'Thal Arane Damsak Nada', href: 'https://youtube.com', color: '#FF0000' },
-    { icon: <IoLogoFacebook />, label: 'Facebook', value: 'Sarasavi Viharaya', href: 'https://facebook.com', color: '#1877F2' },
-    { icon: <IoMail />, label: 'Email', value: 'sarasaviviharaya@gmail.com', href: 'mailto:sarasaviviharaya@gmail.com', color: 'var(--sacred-gold-dark)' },
-    { icon: <IoCall />, label: 'Mobile', value: '+94 77 123 4567', href: 'tel:+94771234567', color: 'var(--sacred-gold)' },
+    { icon: <IoLogoYoutube />, label: 'YouTube', value: 'Thal Arane Damsak Nada', href: 'https://www.youtube.com/@thalaranedamsaknada4502', color: '#FF0000' },
+    { icon: <IoLogoFacebook />, label: 'Facebook', value: 'Jaffna Uni YMBA', href: 'https://web.facebook.com/JaffnaUniYMBA', color: '#1877F2' },
+    { icon: <IoMail />, label: 'Email', value: 'thalaranedamsaknada@gmail.com', href: 'mailto:thalaranedamsaknada@gmail.com', color: 'var(--sacred-gold-dark)' },
+    { icon: <IoCall />, label: 'Mobile', value: '+94 77 699 3908 (Saliya Sampath)', href: 'tel:+94776993908', color: 'var(--sacred-gold)' },
 ];
 
 export default function ContactPage() {
@@ -87,6 +87,66 @@ export default function ContactPage() {
                                 <div>
                                     <h4>Location</h4>
                                     <p>Sarasavi Viharaya, Kilinochchi Premises, University of Jaffna, Kilinochchi, Sri Lanka</p>
+                                </div>
+                            </div>
+
+                            {/* QR Codes */}
+                            <div className={styles.qrSection}>
+                                <h3 className={styles.qrTitle}>
+                                    <IoQrCodeOutline /> Scan to Follow Us
+                                </h3>
+                                <div className={styles.qrCards}>
+                                    <motion.a
+                                        href="https://www.youtube.com/@thalaranedamsaknada4502"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={styles.qrCard}
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: 0.1 }}
+                                    >
+                                        <div className={styles.qrImageWrap} style={{ borderColor: 'rgba(255,0,0,0.2)' }}>
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent('https://www.youtube.com/@thalaranedamsaknada4502')}&bgcolor=FFFFFE&color=1A1919&margin=8`}
+                                                alt="YouTube QR Code"
+                                                width={160}
+                                                height={160}
+                                                className={styles.qrImage}
+                                            />
+                                        </div>
+                                        <div className={styles.qrLabel}>
+                                            <IoLogoYoutube style={{ color: '#FF0000', fontSize: '1.2rem' }} />
+                                            <span>YouTube</span>
+                                        </div>
+                                    </motion.a>
+
+                                    <motion.a
+                                        href="https://web.facebook.com/JaffnaUniYMBA"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={styles.qrCard}
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: 0.2 }}
+                                    >
+                                        <div className={styles.qrImageWrap} style={{ borderColor: 'rgba(24,119,242,0.2)' }}>
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent('https://web.facebook.com/JaffnaUniYMBA')}&bgcolor=FFFFFE&color=1A1919&margin=8`}
+                                                alt="Facebook QR Code"
+                                                width={160}
+                                                height={160}
+                                                className={styles.qrImage}
+                                            />
+                                        </div>
+                                        <div className={styles.qrLabel}>
+                                            <IoLogoFacebook style={{ color: '#1877F2', fontSize: '1.2rem' }} />
+                                            <span>Facebook</span>
+                                        </div>
+                                    </motion.a>
                                 </div>
                             </div>
                         </div>
