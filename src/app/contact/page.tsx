@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { IoLogoYoutube, IoLogoFacebook, IoMail, IoCall, IoLocationOutline, IoSend, IoCheckmarkCircleOutline, IoQrCodeOutline } from 'react-icons/io5';
+import { IoLogoYoutube, IoLogoFacebook, IoMail, IoCall, IoLocationOutline, IoSend, IoCheckmarkCircleOutline, IoQrCodeOutline, IoLogoLinkedin, IoCodeSlash, IoMapOutline } from 'react-icons/io5';
 import styles from './page.module.css';
 
 const contactMethods = [
@@ -149,6 +149,35 @@ export default function ContactPage() {
                                     </motion.a>
                                 </div>
                             </div>
+
+                            {/* Developer Card */}
+                            <motion.div
+                                className={styles.devCard}
+                                initial={{ opacity: 0, y: 15 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                            >
+                                <div className={styles.devContent}>
+                                    <div className={styles.devPhoto}>
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img src="/images/developer.jpg" alt="Sasindu Malhara" />
+                                    </div>
+                                    <div className={styles.devInfo}>
+                                        <span className={styles.devBadge}><IoCodeSlash /> Developer</span>
+                                        <h4 className={styles.devName}>Sasindu Malhara</h4>
+                                        <p className={styles.devRole}>AI/ML Engineer · ML Researcher · Full-Stack Developer</p>
+                                        <p className={styles.devStack}>PyTorch · TensorFlow · Python · Next.js · React · TypeScript · Firebase · Node.js</p>
+                                        <a
+                                            href="https://linkedin.com/in/sasindu-malhara-a87ab4236"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={styles.linkedinBtn}
+                                        >
+                                            <IoLogoLinkedin /> LinkedIn
+                                        </a>
+                                    </div>
+                                </div>
+                            </motion.div>
                         </div>
 
                         {/* Contact Form */}
@@ -189,6 +218,31 @@ export default function ContactPage() {
                                     </button>
                                 </form>
                             )}
+                        </motion.div>
+
+                        {/* Map */}
+                        <motion.div className={styles.mapCard} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                            <h3 className={styles.mapTitle}><IoMapOutline /> Find Us</h3>
+                            <div className={styles.mapWrap}>
+                                <iframe
+                                    src="https://www.google.com/maps?q=8CG2%2BRHJ+Buddhist+Temple+-+Kilinochchi+Premises,+University+of+Jaffna,+Iranamadu,+Ariviyal+Nagar&output=embed"
+                                    width="100%"
+                                    height="280"
+                                    style={{ border: 0, borderRadius: '12px' }}
+                                    allowFullScreen
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                    title="Sarasavi Viharaya Location"
+                                />
+                            </div>
+                            <a
+                                href="https://maps.app.goo.gl/hqdbkGyMgZFUbsmD7?g_st=ic"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={styles.mapLink}
+                            >
+                                Open in Google Maps →
+                            </a>
                         </motion.div>
                     </div>
                 </div>

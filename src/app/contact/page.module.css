@@ -133,6 +133,46 @@
     margin-bottom: var(--space-xl);
 }
 
+/* Map Card */
+.mapCard {
+    margin-top: var(--space-lg);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(245, 185, 38, 0.12);
+    border-radius: var(--radius-xl);
+    padding: var(--space-lg);
+}
+
+.mapTitle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--void-ink);
+    margin-bottom: var(--space-md);
+}
+
+.mapWrap {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(26, 25, 25, 0.08);
+}
+
+.mapLink {
+    display: inline-block;
+    margin-top: var(--space-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--sacred-gold-dark);
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.mapLink:hover {
+    opacity: 0.75;
+}
+
 @media (max-width: 768px) {
     .grid {
         grid-template-columns: 1fr;
@@ -214,4 +254,97 @@
     .qrCards {
         grid-template-columns: 1fr;
     }
+}
+
+/* Developer Card — light & compact */
+.devCard {
+    margin-top: var(--space-lg);
+    padding: var(--space-md);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(245, 185, 38, 0.1);
+    border-radius: var(--radius-lg);
+}
+
+.devContent {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.devPhoto {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid rgba(245, 185, 38, 0.25);
+}
+
+.devPhoto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.devInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.devBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 12px;
+    background: rgba(245, 185, 38, 0.1);
+    color: var(--sacred-gold-dark);
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.25rem;
+}
+
+.devName {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--void-ink);
+    margin-bottom: 1px;
+}
+
+.devRole {
+    font-size: 0.75rem;
+    color: var(--stone-charcoal);
+    opacity: 0.7;
+    margin-bottom: 2px;
+}
+
+.devStack {
+    font-size: 0.7rem;
+    color: var(--stone-charcoal);
+    opacity: 0.5;
+    margin-bottom: 0.5rem;
+}
+
+.linkedinBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 16px;
+    background: #0A66C2;
+    color: #FFFFFE;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-base);
+}
+
+.linkedinBtn:hover {
+    background: #004182;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(10, 102, 194, 0.3);
 }
