@@ -24,9 +24,16 @@ export default function EventsPage() {
         async function loadData() {
             try {
                 const [evts, tags] = await Promise.all([getEvents(), getTags()]);
-                // Only show published events
-                setEvents(evts.filter(e => e.isPublished));
+                const published = evts.filter(e => e.isPublished);
+                setEvents(published);
                 setAllTags(['All', ...tags.map(t => t.name)]);
+
+                // Auto-switch to past tab if no upcoming events
+                const now = new Date();
+                const hasUpcoming = published.some(e => new Date(e.date) >= now);
+                if (!hasUpcoming && published.length > 0) {
+                    setTab('past');
+                }
             } catch (err) {
                 console.error('Error loading events:', err);
             }
@@ -35,12 +42,11 @@ export default function EventsPage() {
         loadData();
     }, []);
 
-    const now = new Date();
-
     const filteredEvents = useMemo(() => {
+        const now = new Date();
         let filtered = events.filter((e) => {
             const eventDate = new Date(e.date);
-            return tab === 'upcoming' ? eventDate > now : eventDate <= now;
+            return tab === 'upcoming' ? eventDate >= now : eventDate < now;
         });
 
         if (selectedTag !== 'All') {

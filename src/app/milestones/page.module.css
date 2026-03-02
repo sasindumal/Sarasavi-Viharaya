@@ -70,13 +70,37 @@
 }
 
 .sortSelect {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 2.25rem 0.5rem 1rem;
     border: 1px solid rgba(52, 53, 52, 0.1);
     border-radius: var(--radius-full);
     font-size: 0.85rem;
+    font-weight: 500;
     background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     cursor: pointer;
     color: var(--void-ink);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23343534' d='M6 8.825a.5.5 0 0 1-.354-.146l-3.5-3.5a.5.5 0 1 1 .708-.708L6 7.618l3.146-3.147a.5.5 0 1 1 .708.708l-3.5 3.5A.5.5 0 0 1 6 8.825z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px;
+    transition: all var(--transition-fast);
+    height: 40px;
+    white-space: nowrap;
+}
+
+.sortSelect:hover {
+    border-color: rgba(245, 185, 38, 0.4);
+    box-shadow: 0 0 0 3px rgba(245, 185, 38, 0.06);
+}
+
+.sortSelect:focus {
+    outline: none;
+    border-color: var(--sacred-gold);
+    box-shadow: 0 0 0 3px rgba(245, 185, 38, 0.1);
 }
 
 .sectionLabel {

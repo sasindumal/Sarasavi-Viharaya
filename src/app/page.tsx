@@ -3,9 +3,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { IoCalendarOutline, IoTimeOutline, IoLocationOutline, IoSparkles, IoArrowForward, IoLeafOutline, IoBookOutline, IoPeopleOutline, IoHeartOutline, IoMailOutline } from 'react-icons/io5';
+import { IoCalendarOutline, IoTimeOutline, IoLocationOutline, IoSparkles, IoArrowForward, IoLeafOutline, IoBookOutline, IoPeopleOutline, IoHeartOutline, IoMailOutline, IoFlagOutline } from 'react-icons/io5';
 import SubscribeForm from '@/components/ui/SubscribeForm';
+import CountdownTimer from '@/components/ui/CountdownTimer';
 import { GiLotusFlower, GiTempleGate, GiMeditation } from 'react-icons/gi';
+import { getEvents, getMilestones } from '@/lib/firestore';
+import { format } from 'date-fns';
+import type { Event, Milestone } from '@/types';
 import styles from './page.module.css';
 
 const heroImages = [
@@ -125,6 +129,8 @@ function shuffleArray<T>(array: T[]): T[] {
 export default function HomePage() {
   const shuffledImages = useMemo(() => shuffleArray(heroImages), []);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
+  const [upcomingMilestones, setUpcomingMilestones] = useState<Milestone[]>([]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -132,6 +138,24 @@ export default function HomePage() {
     }, 4000);
     return () => clearInterval(timer);
   }, [shuffledImages.length]);
+
+  useEffect(() => {
+    async function fetchUpcoming() {
+      const now = new Date();
+      const [events, milestones] = await Promise.all([getEvents(), getMilestones()]);
+      const futureEvents = events
+        .filter(e => e.isPublished && new Date(e.date) >= now)
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .slice(0, 3);
+      const futureMilestones = milestones
+        .filter(m => m.isPublished && new Date(m.date) >= now)
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .slice(0, 3);
+      setUpcomingEvents(futureEvents);
+      setUpcomingMilestones(futureMilestones);
+    }
+    fetchUpcoming();
+  }, []);
 
   return (
     <div className={styles.page}>
@@ -207,6 +231,124 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Upcoming Events */}
+      {upcomingEvents.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="section-header">
+              <h2>Upcoming Events</h2>
+              <p>Don&apos;t miss these upcoming ceremonies and gatherings at Sarasavi Viharaya.</p>
+            </div>
+
+            <div className={styles.upcomingGrid}>
+              {upcomingEvents.map((event, i) => (
+                <motion.div
+                  key={event.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15 }}
+                >
+                  <Link href={`/events/${event.id}`} className={styles.upcomingCard}>
+                    {event.coverPhoto && (
+                      <div
+                        className={styles.upcomingImage}
+                        style={{ backgroundImage: `url(${event.coverPhoto})` }}
+                      />
+                    )}
+                    <div className={styles.upcomingBody}>
+                      <div className={styles.upcomingMeta}>
+                        <span className={styles.upcomingDate}>
+                          <IoCalendarOutline />
+                          {format(new Date(event.date), 'MMM d, yyyy')}
+                        </span>
+                        {event.duration && (
+                          <span className={styles.upcomingTime}>
+                            <IoTimeOutline />
+                            {event.duration}
+                          </span>
+                        )}
+                      </div>
+                      <h3 className={styles.upcomingTitle}>{event.title}</h3>
+                      <p className={styles.upcomingDesc}>
+                        {event.description.length > 120
+                          ? event.description.slice(0, 120) + '...'
+                          : event.description}
+                      </p>
+                      <div className={styles.upcomingCountdown}>
+                        <CountdownTimer targetDate={event.date} compact />
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className={styles.upcomingCta}>
+              <Link href="/events" className="btn btn-secondary">
+                View All Events <IoArrowForward />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Upcoming Milestones */}
+      {upcomingMilestones.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="section-header">
+              <h2>Upcoming Milestones</h2>
+              <p>Significant moments on the horizon for our sacred temple.</p>
+            </div>
+
+            <div className={styles.upcomingGrid}>
+              {upcomingMilestones.map((milestone, i) => (
+                <motion.div
+                  key={milestone.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15 }}
+                >
+                  <Link href={`/milestones/${milestone.id}`} className={styles.upcomingCard}>
+                    {milestone.coverPhoto && (
+                      <div
+                        className={styles.upcomingImage}
+                        style={{ backgroundImage: `url(${milestone.coverPhoto})` }}
+                      />
+                    )}
+                    <div className={styles.upcomingBody}>
+                      <div className={styles.upcomingMeta}>
+                        <span className={styles.upcomingDate}>
+                          <IoFlagOutline />
+                          {format(new Date(milestone.date), 'MMM d, yyyy')}
+                        </span>
+                      </div>
+                      <h3 className={styles.upcomingTitle}>{milestone.title}</h3>
+                      <p className={styles.upcomingDesc}>
+                        {milestone.description.length > 120
+                          ? milestone.description.slice(0, 120) + '...'
+                          : milestone.description}
+                      </p>
+                      <div className={styles.upcomingCountdown}>
+                        <CountdownTimer targetDate={milestone.date} compact />
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className={styles.upcomingCta}>
+              <Link href="/milestones" className="btn btn-secondary">
+                View All Milestones <IoArrowForward />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Sections Grid */}
       <section className="section">

@@ -19,6 +19,7 @@ import {
     IoHeartOutline,
     IoRibbonOutline,
     IoLockClosedOutline,
+    IoNotificationsOutline,
 } from 'react-icons/io5';
 import { GiLotusFlower } from 'react-icons/gi';
 
@@ -29,6 +30,7 @@ const navItems = [
     { href: '/admin/blessings', label: 'Blessings', icon: <IoHeartOutline /> },
     { href: '/admin/acknowledgments', label: 'Acknowledgments', icon: <IoRibbonOutline /> },
     { href: '/admin/messages', label: 'Messages', icon: <IoMailOutline /> },
+    { href: '/admin/subscribers', label: 'Subscribers', icon: <IoNotificationsOutline /> },
     { href: '/admin/tags', label: 'Tags', icon: <IoPricetagsOutline /> },
     { href: '/admin/users', label: 'Users', icon: <IoPeopleOutline /> },
 ];

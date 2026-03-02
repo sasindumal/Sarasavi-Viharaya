@@ -122,6 +122,11 @@ export async function getSubscribers(): Promise<Subscriber[]> {
     return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Subscriber));
 }
 
+export async function getAllSubscribers(): Promise<Subscriber[]> {
+    const snapshot = await getDocs(collection(db, 'subscribers'));
+    return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Subscriber));
+}
+
 export async function addSubscriber(email: string, name?: string): Promise<string> {
     const q = query(collection(db, 'subscribers'), where('email', '==', email));
     const existing = await getDocs(q);
@@ -141,6 +146,10 @@ export async function addSubscriber(email: string, name?: string): Promise<strin
 
 export async function removeSubscriber(id: string): Promise<void> {
     await updateDoc(doc(db, 'subscribers', id), { isActive: false });
+}
+
+export async function deleteSubscriber(id: string): Promise<void> {
+    await deleteDoc(doc(db, 'subscribers', id));
 }
 
 // ==================== CONTACT MESSAGES ====================

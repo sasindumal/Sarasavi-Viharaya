@@ -183,6 +183,107 @@
 }
 
 /* === SECTIONS GRID === */
+
+/* === UPCOMING EVENTS / MILESTONES === */
+.upcomingGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+.upcomingCard {
+  display: flex;
+  flex-direction: column;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--void-ink);
+  transition: all var(--transition-base);
+  height: 100%;
+}
+
+.upcomingCard:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+  border-color: rgba(245, 185, 38, 0.35);
+}
+
+.upcomingImage {
+  width: 100%;
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.upcomingImage::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to top, var(--glass-bg), transparent);
+}
+
+.upcomingBody {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-lg);
+  flex: 1;
+}
+
+.upcomingMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-bottom: var(--space-sm);
+}
+
+.upcomingDate,
+.upcomingTime {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--sacred-gold-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.upcomingTitle {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: var(--space-xs);
+  line-height: 1.35;
+}
+
+.upcomingDesc {
+  font-size: 0.88rem;
+  color: var(--stone-charcoal);
+  line-height: 1.6;
+  flex: 1;
+  margin-bottom: var(--space-md);
+}
+
+.upcomingCountdown {
+  margin-top: auto;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--glass-border);
+}
+
+.upcomingCta {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-xl);
+}
+
+/* === SECTIONS GRID (EXPLORE) === */
 .sectionsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -332,6 +433,10 @@
 }
 
 @media (max-width: 1024px) {
+  .upcomingGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .sectionsGrid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -356,6 +461,10 @@
 
   .statsGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .upcomingGrid {
+    grid-template-columns: 1fr;
   }
 
   .sectionsGrid {

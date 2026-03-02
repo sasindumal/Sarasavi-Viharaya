@@ -31,8 +31,6 @@ export default function MilestonesPage() {
         loadData();
     }, []);
 
-    const now = new Date();
-
     const filtered = useMemo(() => {
         let items = [...milestones];
         if (search) {
@@ -45,8 +43,9 @@ export default function MilestonesPage() {
         return items;
     }, [milestones, search, sortOrder]);
 
-    const upcoming = filtered.filter(m => new Date(m.date) > now);
-    const past = filtered.filter(m => new Date(m.date) <= now);
+    const now = new Date();
+    const upcoming = filtered.filter(m => new Date(m.date) >= now);
+    const past = filtered.filter(m => new Date(m.date) < now);
 
     if (loading) return <LoadingSpinner message="Loading milestones..." />;
 
