@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { IoCalendarOutline, IoTimeOutline, IoLocationOutline, IoSparkles, IoArrowForward, IoLeafOutline, IoBookOutline, IoPeopleOutline, IoHeartOutline, IoMailOutline } from 'react-icons/io5';
@@ -113,22 +113,32 @@ const stats = [
   { value: '2018', label: 'Established', icon: <IoSparkles /> },
 ];
 
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 export default function HomePage() {
+  const shuffledImages = useMemo(() => shuffleArray(heroImages), []);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+      setCurrentSlide((prev) => (prev + 1) % shuffledImages.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [shuffledImages.length]);
 
   return (
     <div className={styles.page}>
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.slideshow}>
-          {heroImages.map((img, i) => (
+          {shuffledImages.map((img, i) => (
             <div
               key={i}
               className={`${styles.slide} ${i === currentSlide ? styles.activeSlide : ''}`}
