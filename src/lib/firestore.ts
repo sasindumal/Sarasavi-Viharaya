@@ -13,7 +13,7 @@ import {
     setDoc,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import type { Event, Milestone, Tag, AppUser, Subscriber, ContactMessage } from '@/types';
+import type { Event, Milestone, Tag, AppUser, Subscriber, ContactMessage, BlessingMessage, Acknowledgment } from '@/types';
 
 // ==================== EVENTS ====================
 
@@ -162,4 +162,46 @@ export async function markMessageRead(id: string, isRead: boolean): Promise<void
 
 export async function deleteContactMessage(id: string): Promise<void> {
     await deleteDoc(doc(db, 'contactMessages', id));
+}
+
+// ==================== BLESSINGS ====================
+
+export async function getBlessings(): Promise<BlessingMessage[]> {
+    const q = query(collection(db, 'blessings'), orderBy('order', 'asc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as BlessingMessage));
+}
+
+export async function createBlessing(data: Omit<BlessingMessage, 'id'>): Promise<string> {
+    const docRef = await addDoc(collection(db, 'blessings'), data);
+    return docRef.id;
+}
+
+export async function updateBlessing(id: string, data: Partial<BlessingMessage>): Promise<void> {
+    await updateDoc(doc(db, 'blessings', id), data);
+}
+
+export async function deleteBlessing(id: string): Promise<void> {
+    await deleteDoc(doc(db, 'blessings', id));
+}
+
+// ==================== ACKNOWLEDGMENTS ====================
+
+export async function getAcknowledgments(): Promise<Acknowledgment[]> {
+    const q = query(collection(db, 'acknowledgments'), orderBy('order', 'asc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Acknowledgment));
+}
+
+export async function createAcknowledgment(data: Omit<Acknowledgment, 'id'>): Promise<string> {
+    const docRef = await addDoc(collection(db, 'acknowledgments'), data);
+    return docRef.id;
+}
+
+export async function updateAcknowledgment(id: string, data: Partial<Acknowledgment>): Promise<void> {
+    await updateDoc(doc(db, 'acknowledgments', id), data);
+}
+
+export async function deleteAcknowledgment(id: string): Promise<void> {
+    await deleteDoc(doc(db, 'acknowledgments', id));
 }

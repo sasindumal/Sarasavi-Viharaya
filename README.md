@@ -4,16 +4,21 @@ A modern, full-stack Next.js website for the Sarasavi Viharaya Buddhist Temple a
 
 ## ✨ Features
 
-- **Public Pages** — Home (hero slideshow), History, About, Events, Milestones, Blessings, Contact, Acknowledgments
-- **Admin Dashboard** — Role-based (super_admin, admin, moderator) with full CRUD for events, milestones, tags, and users
+- **Public Pages** — Home (hero slideshow), History, About, Events, Milestones, Blessings, Acknowledgments, Contact
+- **Admin Dashboard** — Role-based (super_admin, admin, moderator) with full CRUD for events, milestones, blessings, acknowledgments, tags, and users
+- **Role Hierarchy** — super_admin manages admins & moderators; admin manages moderators only; moderators manage content only
+- **Change Password** — All admin roles can change their own password from the sidebar
 - **Contact Message Inbox** — Admin Messages page with read/unread status, search, filters, detail view, and reply via email
+- **Blessings Management** — Admin CRUD for blessing messages with photo upload, ordering, and seed existing data
+- **Acknowledgments Management** — Admin CRUD with category filter (Donor/Workforce/Special), photo upload, ordering, and seed existing data
 - **Image Uploads** — Cover photos and bulk photo album uploads to Cloudinary with progress bar and ETA
 - **Event/Milestone Scheduling** — Date + Start Time → End Time with multi-day support and auto-computed duration
 - **Email Notifications** — Notify subscribers when new events or milestones are published (via Resend)
-- **Contact Form** — Public contact form saves messages to Firestore + optional email notification
+- **Contact Form** — Public contact form with Google Maps embed, saves messages to Firestore + optional email notification
 - **Subscribe System** — Public email subscription form with Firestore backend
 - **Responsive Design** — Glassmorphism theme with Framer Motion animations
 - **Hero Shuffle** — Homepage slideshow images randomize on every page load
+- **QR Codes** — YouTube and Facebook QR codes on the contact page
 
 ---
 
@@ -120,53 +125,92 @@ Go to **Firestore** → **Rules** tab and paste:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Admin users (authenticated)
-    match /users/{userId} {
-      allow read, write: if request.auth != null;
+
+    function isAuth() {
+      return request.auth != null;
     }
 
-    // Events
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function roleLevel(role) {
+      return role == 'super_admin' ? 3
+           : role == 'admin' ? 2
+           : role == 'moderator' ? 1
+           : 0;
+    }
+
+    function canManage() {
+      return isAuth() && roleLevel(getUserRole()) >= 1;
+    }
+
+    function canManageUsers() {
+      return isAuth() && roleLevel(getUserRole()) >= 2;
+    }
+
+    // Events — public read, admin write
     match /events/{eventId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow create, update, delete: if canManage();
     }
 
-    // Milestones
+    // Milestones — public read, admin write
     match /milestones/{milestoneId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow create, update, delete: if canManage();
     }
 
-    // Tags
+    // Tags — public read, admin write
     match /tags/{tagId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow create, delete: if canManage();
     }
 
-    // Subscribers - allow public subscribe, admin manage
-    match /subscribers/{subscriberId} {
-      allow read: if true;
-      allow create: if true;
-      allow update, delete: if request.auth != null;
-    }
-
-    // Blessings - allow public create
+    // Blessings — public read, admin write
     match /blessings/{blessingId} {
       allow read: if true;
-      allow create: if true;
-      allow update, delete: if request.auth != null;
+      allow create, update, delete: if canManage();
     }
 
-    // Acknowledgments
-    match /acknowledgments/{ackId} {
+    // Acknowledgments — public read, admin write
+    match /acknowledgments/{acknowledgmentId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow create, update, delete: if canManage();
     }
 
-    // Contact Messages - allow public create, admin manage
-    match /contactMessages/{msgId} {
+    // Users — role hierarchy enforcement
+    // super_admin can manage admin & moderator
+    // admin can manage moderator only
+    match /users/{userId} {
+      allow read: if isAuth() && (request.auth.uid == userId || canManageUsers());
+      allow create: if canManageUsers()
+        && roleLevel(getUserRole()) > roleLevel(request.resource.data.role);
+      allow update: if isAuth()
+        && (
+          request.auth.uid == userId
+          || (
+            canManageUsers()
+            && roleLevel(getUserRole()) > roleLevel(resource.data.role)
+            && roleLevel(getUserRole()) > roleLevel(request.resource.data.role)
+          )
+        );
+      allow delete: if canManageUsers()
+        && roleLevel(getUserRole()) > roleLevel(resource.data.role);
+    }
+
+    // Subscribers — public can subscribe, admin can read/manage
+    match /subscribers/{subscriberId} {
+      allow read: if canManage();
       allow create: if true;
-      allow read, update, delete: if request.auth != null;
+      allow update, delete: if canManage();
+    }
+
+    // Contact Messages — public can create, admin can read/manage
+    match /contactMessages/{messageId} {
+      allow read: if canManage();
+      allow create: if true;
+      allow update, delete: if canManage();
     }
   }
 }
@@ -276,7 +320,7 @@ CLOUDINARY_API_SECRET=your_api_secret
 3. Sign in with the email and password from step 4.1
 4. You should see the admin dashboard with sidebar
 
-> **Roles**: `super_admin` (full access), `admin` (manage content + moderators), `moderator` (manage content only)
+> **Roles**: `super_admin` (full access — manages admins & moderators), `admin` (manage content + moderators), `moderator` (manage content only). All roles can change their own password from the admin sidebar.
 
 ---
 
@@ -310,6 +354,11 @@ npm run dev
 - [ ] **Messages** page shows contact form submissions with unread count
 - [ ] Open a message → auto-marks as read, shows full detail + reply link
 - [ ] Mark messages as read/unread, delete messages
+- [ ] **Blessings** page — add/edit/delete blessings, seed existing data, reorder, upload photos
+- [ ] **Acknowledgments** page — add/edit/delete with category filter, seed existing data, reorder
+- [ ] **Change Password** — click in sidebar, enter current + new password, verify update
+- [ ] **Role Hierarchy** — super_admin sees all users, admin sees only moderators
+- [ ] **Change Role** — super_admin can change admin↔moderator, admin cannot change admin roles
 
 ### Contact & API Routes
 - [ ] Submit the **Contact** form → check Firestore `contactMessages` collection
@@ -432,14 +481,16 @@ sarasavi-viharaya/
 │   │   ├── history/                    # History page
 │   │   ├── milestones/                 # Milestones listing + [id] detail
 │   │   ├── admin/
-│   │   │   ├── layout.tsx              # Admin sidebar + auth guard
+│   │   │   ├── layout.tsx              # Admin sidebar, auth guard, change password
 │   │   │   ├── login/page.tsx          # Admin login
 │   │   │   ├── page.tsx                # Dashboard home
 │   │   │   ├── events/page.tsx         # Events CRUD + image uploads
 │   │   │   ├── milestones/page.tsx     # Milestones CRUD + image uploads
+│   │   │   ├── blessings/page.tsx      # Blessings CRUD + photo upload + seed
+│   │   │   ├── acknowledgments/page.tsx# Acknowledgments CRUD + categories + seed
 │   │   │   ├── messages/page.tsx       # Contact message inbox
 │   │   │   ├── tags/page.tsx           # Tags management
-│   │   │   └── users/page.tsx          # User management
+│   │   │   └── users/page.tsx          # User management + role change
 │   │   └── api/
 │   │       ├── contact/route.ts        # Contact form (Firestore + email)
 │   │       ├── subscribe/route.ts      # Email subscription
@@ -450,7 +501,7 @@ sarasavi-viharaya/
 │   ├── lib/
 │   │   ├── firebase.ts                 # Firebase init
 │   │   ├── firestore.ts                # Firestore CRUD helpers
-│   │   ├── auth.ts                     # Auth hooks & role utils
+│   │   ├── auth.ts                     # Auth hooks, role hierarchy & permission utils
 │   │   ├── cloudinary.ts               # Image upload utils (single, bulk, progress)
 │   │   └── notifications.ts            # Resend email sending
 │   └── types/

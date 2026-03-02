@@ -7,10 +7,11 @@ import {
     IoTrashOutline,
     IoPeopleOutline,
     IoShieldCheckmarkOutline,
+    IoCreateOutline,
 } from 'react-icons/io5';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { useAuth, canManageUsers, isSuperAdmin } from '@/lib/auth';
+import { useAuth, canManageUsers, isSuperAdmin, canManageRole, getAssignableRoles } from '@/lib/auth';
 import { getUsers, setUser, deleteUser as fsDeleteUser } from '@/lib/firestore';
 import Modal from '@/components/ui/Modal';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -82,6 +83,8 @@ export default function AdminUsersPage() {
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState({ email: '', password: '', displayName: '', role: 'moderator' as AppUser['role'] });
     const [error, setError] = useState('');
+    const [roleEditTarget, setRoleEditTarget] = useState<AppUser | null>(null);
+    const [newRole, setNewRole] = useState<AppUser['role']>('moderator');
 
     useEffect(() => { loadData(); }, []);
 
@@ -139,18 +142,34 @@ export default function AdminUsersPage() {
         }
     }
 
-    // Filter visible users based on role
+    async function handleRoleChange() {
+        if (!roleEditTarget || !appUser) return;
+        setSaving(true);
+        try {
+            await setUser(roleEditTarget.uid, {
+                email: roleEditTarget.email,
+                displayName: roleEditTarget.displayName,
+                role: newRole,
+                createdAt: roleEditTarget.createdAt,
+                createdBy: roleEditTarget.createdBy,
+            });
+            setRoleEditTarget(null);
+            await loadData();
+        } catch (err) {
+            console.error('Error updating role:', err);
+        }
+        setSaving(false);
+    }
+
+    // Filter visible users: show yourself + users you can manage
     const visibleUsers = users.filter(u => {
         if (!appUser) return false;
-        if (isSuperAdmin(appUser.role)) return true;
-        if (appUser.role === 'admin') return u.role === 'moderator';
-        return false;
+        if (u.uid === appUser.uid) return true; // always show self
+        return canManageRole(appUser.role, u.role);
     });
 
     // Determine what roles the current user can assign
-    const assignableRoles: AppUser['role'][] = appUser && isSuperAdmin(appUser.role)
-        ? ['admin', 'moderator']
-        : ['moderator'];
+    const assignableRoles = appUser ? getAssignableRoles(appUser.role) : [];
 
     if (authLoading || loading) return <LoadingSpinner message="Loading users..." />;
     if (appUser && !canManageUsers(appUser.role)) {
@@ -197,12 +216,19 @@ export default function AdminUsersPage() {
                                         <td>{new Date(u.createdAt).toLocaleDateString()}</td>
                                         <td>
                                             <div style={s.actions}>
-                                                {u.uid !== appUser?.uid && (
-                                                    <button
-                                                        style={{ ...s.iconBtn, background: 'rgba(223,82,42,0.1)', color: '#DF522A' }}
-                                                        onClick={() => setDeleteConfirm(u.uid)}
-                                                        title="Delete user"
-                                                    ><IoTrashOutline /></button>
+                                                {u.uid !== appUser?.uid && appUser && canManageRole(appUser.role, u.role) && (
+                                                    <>
+                                                        <button
+                                                            style={{ ...s.iconBtn, background: 'rgba(245,185,38,0.1)', color: '#d9a01e' }}
+                                                            onClick={() => { setRoleEditTarget(u); setNewRole(u.role); }}
+                                                            title="Change role"
+                                                        ><IoCreateOutline /></button>
+                                                        <button
+                                                            style={{ ...s.iconBtn, background: 'rgba(223,82,42,0.1)', color: '#DF522A' }}
+                                                            onClick={() => setDeleteConfirm(u.uid)}
+                                                            title="Delete user"
+                                                        ><IoTrashOutline /></button>
+                                                    </>
                                                 )}
                                             </div>
                                         </td>
@@ -241,6 +267,30 @@ export default function AdminUsersPage() {
                     <button className="btn btn-secondary btn-sm" onClick={() => { setModalOpen(false); setError(''); }}>Cancel</button>
                     <button className="btn btn-primary btn-sm" onClick={handleCreate} disabled={saving}>
                         {saving ? 'Creating...' : 'Create User'}
+                    </button>
+                </div>
+            </Modal>
+
+            {/* Change Role Modal */}
+            <Modal isOpen={!!roleEditTarget} onClose={() => setRoleEditTarget(null)} title="Change User Role">
+                <p style={{ marginBottom: '0.5rem', fontSize: '0.9rem', color: '#343534' }}>
+                    Changing role for <strong>{roleEditTarget?.displayName}</strong>
+                </p>
+                <p style={{ marginBottom: '1rem', fontSize: '0.82rem', color: 'rgba(52,53,52,0.6)' }}>
+                    {roleEditTarget?.email}
+                </p>
+                <div className="form-group">
+                    <label>New Role</label>
+                    <select className="input-field" value={newRole} onChange={e => setNewRole(e.target.value as AppUser['role'])}>
+                        {assignableRoles.map(r => (
+                            <option key={r} value={r}>{r.replace('_', ' ').toUpperCase()}</option>
+                        ))}
+                    </select>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1.25rem' }}>
+                    <button className="btn btn-secondary btn-sm" onClick={() => setRoleEditTarget(null)}>Cancel</button>
+                    <button className="btn btn-primary btn-sm" onClick={handleRoleChange} disabled={saving || newRole === roleEditTarget?.role}>
+                        {saving ? 'Updating...' : 'Update Role'}
                     </button>
                 </div>
             </Modal>
