@@ -1,28 +1,41 @@
 # 🪷 Sarasavi Viharaya — Buddhist Temple Website
 
-A modern, full-stack Next.js website for the Sarasavi Viharaya Buddhist Temple at the University of Jaffna. Features a glassmorphism light theme, Buddhist-inspired design, event/milestone management, role-based admin dashboard, and subscriber email notifications.
+A modern, full-stack Next.js website for the Sarasavi Viharaya Buddhist Temple at the University of Jaffna. Features a glassmorphism light theme, Buddhist-inspired design, event/milestone management with image uploads, role-based admin dashboard, and subscriber email notifications.
+
+## ✨ Features
+
+- **Public Pages** — Home (hero slideshow), History, About, Events, Milestones, Blessings, Contact, Acknowledgments
+- **Admin Dashboard** — Role-based (super_admin, admin, moderator) with full CRUD for events, milestones, tags, and users
+- **Image Uploads** — Cover photos and bulk photo album uploads to Cloudinary with progress bar and ETA
+- **Event/Milestone Scheduling** — Date + Start Time → End Time with multi-day support and auto-computed duration
+- **Email Notifications** — Notify subscribers when new events or milestones are published (via Resend)
+- **Subscribe System** — Public email subscription form with Firestore backend
+- **Responsive Design** — Glassmorphism theme with Framer Motion animations
+- **Hero Shuffle** — Homepage slideshow images randomize on every page load
 
 ---
 
 ## 📋 Table of Contents
 
-1. [Quick Start (Local Dev)](#-quick-start-local-dev)
+1. [Quick Start](#-quick-start)
 2. [Fix Common Errors](#-fix-common-errors)
 3. [Firebase Setup](#-step-1-firebase-setup)
 4. [Resend Email Setup](#-step-2-resend-email-setup)
-5. [Cloudinary Setup (Optional)](#-step-3-cloudinary-setup-optional)
+5. [Cloudinary Setup](#-step-3-cloudinary-setup)
 6. [Create Admin User](#-step-4-create-your-first-admin-user)
 7. [Test Locally](#-step-5-test-everything-locally)
 8. [Deploy to Vercel](#-step-6-deploy-to-vercel)
 9. [Post-Deployment](#-step-7-post-deployment-checklist)
 10. [Project Structure](#-project-structure)
+11. [Tech Stack](#-tech-stack)
 
 ---
 
-## 🚀 Quick Start (Local Dev)
+## 🚀 Quick Start
 
 ```bash
-cd /Users/sasindumalhara/Workspace/untitled\ folder\ 2/sarasavi-viharaya
+# Clone and navigate
+cd Sarasavi-Viharaya
 
 # Install dependencies
 npm install
@@ -105,29 +118,47 @@ Go to **Firestore** → **Rules** tab and paste:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Public read for events, milestones, tags
+    // Admin users (authenticated)
+    match /users/{userId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Events
     match /events/{eventId} {
       allow read: if true;
       allow write: if request.auth != null;
     }
+
+    // Milestones
     match /milestones/{milestoneId} {
       allow read: if true;
       allow write: if request.auth != null;
     }
+
+    // Tags
     match /tags/{tagId} {
       allow read: if true;
       allow write: if request.auth != null;
     }
-    
-    // Subscribers - write allowed for subscription, read for admins
+
+    // Subscribers - allow public subscribe, admin manage
     match /subscribers/{subscriberId} {
+      allow read: if true;
       allow create: if true;
-      allow read, update, delete: if request.auth != null;
+      allow update, delete: if request.auth != null;
     }
-    
-    // Users - admin only
-    match /users/{userId} {
-      allow read, write: if request.auth != null;
+
+    // Blessings - allow public create
+    match /blessings/{blessingId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if request.auth != null;
+    }
+
+    // Acknowledgments
+    match /acknowledgments/{ackId} {
+      allow read: if true;
+      allow write: if request.auth != null;
     }
   }
 }
@@ -181,14 +212,17 @@ RESEND_FROM_EMAIL=notifications@yourdomain.com
 
 ---
 
-## ☁️ Step 3: Cloudinary Setup (Optional)
+## ☁️ Step 3: Cloudinary Setup
 
-Only needed if you want cloud image uploads in the admin panel.
+Required for cover photo and photo album uploads in the admin panel.
 
 1. Go to [cloudinary.com](https://cloudinary.com) → Sign up (free tier: 25 GB)
 2. From the Dashboard, copy your **Cloud Name**
-3. Go to **Settings** → **Upload** → Create an **Upload Preset** (set to `unsigned`)
-4. Add to `.env.local`:
+3. Go to **Settings** → **Upload** → Create an **Upload Preset**:
+   - Name: `sarasavi-viharaya` (or any name)
+   - Signing Mode: **Unsigned**
+4. Also copy your **API Key** and **API Secret** from the Dashboard
+5. Add to `.env.local`:
 
 ```env
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
@@ -196,6 +230,8 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_preset_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 ```
+
+> **Upload Features**: Admin panel supports single cover photo upload and bulk photo album uploads with real-time progress bar and estimated time remaining.
 
 ---
 
@@ -247,19 +283,22 @@ npm run dev
 ```
 
 ### Public Pages
-- [ ] Home page loads with hero slideshow and subscribe form
+- [ ] Home page loads with hero slideshow (images shuffle on each load) and subscribe form
+- [ ] Subscribe form works (check Firestore `subscribers` collection)
 - [ ] History, About, Blessings, Contact pages render correctly
-- [ ] Events listing page shows content
-- [ ] Milestones listing page shows content
-- [ ] Event/Milestone detail pages load (`/events/1`, `/milestones/1`)
+- [ ] Events listing page shows published events from Firestore
+- [ ] Milestones listing page shows published milestones from Firestore
+- [ ] Event/Milestone detail pages load with cover photo, description, photo album
 
 ### Admin Dashboard
 - [ ] Login at `/admin/login` → redirects to dashboard
 - [ ] Dashboard shows stat cards and quick actions
-- [ ] Create, edit, delete an **Event**
-- [ ] Create, edit, delete a **Milestone**
+- [ ] Create an **Event** with date/time, cover photo upload, and photo album upload
+- [ ] Edit/delete events; verify progress bar and ETA show during uploads
+- [ ] Create a **Milestone** with same upload features
 - [ ] Create and delete **Tags**
 - [ ] Create a new **User** (moderator role)
+- [ ] Toggle **Notify Subscribers** when creating → verify email sent
 
 ### API Routes
 - [ ] Subscribe via the home page form → check Firestore `subscribers` collection
@@ -315,8 +354,12 @@ In Vercel project settings → **Environment Variables**, add ALL variables from
 | `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | `your-project.appspot.com` |
 | `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | `123456789` |
 | `NEXT_PUBLIC_FIREBASE_APP_ID` | `1:123:web:abc` |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | `your_cloud_name` |
+| `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` | `your_preset_name` |
+| `CLOUDINARY_API_KEY` | `your_api_key` |
+| `CLOUDINARY_API_SECRET` | `your_api_secret` |
 | `RESEND_API_KEY` | `re_abc123...` |
-| `RESEND_FROM_EMAIL` | `noreply@yourdomin.com` |
+| `RESEND_FROM_EMAIL` | `noreply@yourdomain.com` |
 | `NEXT_PUBLIC_APP_URL` | `https://your-domain.vercel.app` |
 
 > ⚠️ Make sure all `NEXT_PUBLIC_*` vars are added — they're embedded into the client bundle at build time.
@@ -364,7 +407,7 @@ If you get Firestore index errors in production logs:
 sarasavi-viharaya/
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx                    # Landing page
+│   │   ├── page.tsx                    # Landing page (hero shuffle)
 │   │   ├── layout.tsx                  # Root layout (header/footer)
 │   │   ├── globals.css                 # Design system
 │   │   ├── page.module.css             # Landing page styles
@@ -379,24 +422,27 @@ sarasavi-viharaya/
 │   │   │   ├── layout.tsx              # Admin sidebar + auth guard
 │   │   │   ├── login/page.tsx          # Admin login
 │   │   │   ├── page.tsx                # Dashboard home
-│   │   │   ├── events/page.tsx         # Events CRUD
-│   │   │   ├── milestones/page.tsx     # Milestones CRUD
+│   │   │   ├── events/page.tsx         # Events CRUD + image uploads
+│   │   │   ├── milestones/page.tsx     # Milestones CRUD + image uploads
 │   │   │   ├── tags/page.tsx           # Tags management
 │   │   │   └── users/page.tsx          # User management
 │   │   └── api/
 │   │       ├── subscribe/route.ts      # Email subscription
-│   │       └── notify/route.ts         # Send notifications
+│   │       └── notify/route.ts         # Send notifications to subscribers
 │   ├── components/
 │   │   ├── layout/                     # Header, Footer
-│   │   └── ui/                         # GlassCard, Modal, TagChip, etc.
+│   │   └── ui/                         # GlassCard, Modal, TagChip, PhotoAlbum, etc.
 │   ├── lib/
 │   │   ├── firebase.ts                 # Firebase init
 │   │   ├── firestore.ts                # Firestore CRUD helpers
 │   │   ├── auth.ts                     # Auth hooks & role utils
+│   │   ├── cloudinary.ts               # Image upload utils (single, bulk, progress)
 │   │   └── notifications.ts            # Resend email sending
 │   └── types/
 │       └── index.ts                    # TypeScript interfaces
-├── .env.local.example                  # Environment template
+├── public/
+│   └── images/hero/                    # Hero slideshow images
+├── .env.local                          # Environment variables (not committed)
 ├── next.config.ts                      # Next.js config
 ├── package.json
 └── tsconfig.json
@@ -408,13 +454,41 @@ sarasavi-viharaya/
 
 | Technology | Purpose |
 |------------|---------|
-| **Next.js 16** | React framework (App Router) |
+| **Next.js 16** | React framework (App Router, Turbopack) |
 | **TypeScript** | Type safety |
 | **Firebase Auth** | Admin authentication |
 | **Cloud Firestore** | NoSQL database |
+| **Cloudinary** | Image hosting & uploads |
 | **Resend** | Email notifications |
 | **Framer Motion** | Animations |
 | **Vercel** | Hosting & deployment |
+
+---
+
+## 📄 Environment Variables
+
+```env
+# Firebase
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+
+# Cloudinary
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+
+# Resend
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
 
 ---
 
