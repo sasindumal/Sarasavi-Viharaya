@@ -6,9 +6,11 @@ A modern, full-stack Next.js website for the Sarasavi Viharaya Buddhist Temple a
 
 - **Public Pages** — Home (hero slideshow), History, About, Events, Milestones, Blessings, Contact, Acknowledgments
 - **Admin Dashboard** — Role-based (super_admin, admin, moderator) with full CRUD for events, milestones, tags, and users
+- **Contact Message Inbox** — Admin Messages page with read/unread status, search, filters, detail view, and reply via email
 - **Image Uploads** — Cover photos and bulk photo album uploads to Cloudinary with progress bar and ETA
 - **Event/Milestone Scheduling** — Date + Start Time → End Time with multi-day support and auto-computed duration
 - **Email Notifications** — Notify subscribers when new events or milestones are published (via Resend)
+- **Contact Form** — Public contact form saves messages to Firestore + optional email notification
 - **Subscribe System** — Public email subscription form with Firestore backend
 - **Responsive Design** — Glassmorphism theme with Framer Motion animations
 - **Hero Shuffle** — Homepage slideshow images randomize on every page load
@@ -160,6 +162,12 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null;
     }
+
+    // Contact Messages - allow public create, admin manage
+    match /contactMessages/{msgId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
   }
 }
 ```
@@ -299,8 +307,13 @@ npm run dev
 - [ ] Create and delete **Tags**
 - [ ] Create a new **User** (moderator role)
 - [ ] Toggle **Notify Subscribers** when creating → verify email sent
+- [ ] **Messages** page shows contact form submissions with unread count
+- [ ] Open a message → auto-marks as read, shows full detail + reply link
+- [ ] Mark messages as read/unread, delete messages
 
-### API Routes
+### Contact & API Routes
+- [ ] Submit the **Contact** form → check Firestore `contactMessages` collection
+- [ ] Contact message appears in Admin → **Messages** page
 - [ ] Subscribe via the home page form → check Firestore `subscribers` collection
 - [ ] Test notify endpoint:
 ```bash
@@ -424,9 +437,11 @@ sarasavi-viharaya/
 │   │   │   ├── page.tsx                # Dashboard home
 │   │   │   ├── events/page.tsx         # Events CRUD + image uploads
 │   │   │   ├── milestones/page.tsx     # Milestones CRUD + image uploads
+│   │   │   ├── messages/page.tsx       # Contact message inbox
 │   │   │   ├── tags/page.tsx           # Tags management
 │   │   │   └── users/page.tsx          # User management
 │   │   └── api/
+│   │       ├── contact/route.ts        # Contact form (Firestore + email)
 │   │       ├── subscribe/route.ts      # Email subscription
 │   │       └── notify/route.ts         # Send notifications to subscribers
 │   ├── components/
@@ -485,6 +500,9 @@ CLOUDINARY_API_SECRET=
 # Resend
 RESEND_API_KEY=
 RESEND_FROM_EMAIL=
+
+# Contact (optional — email copy of contact form messages)
+CONTACT_NOTIFY_EMAIL=
 
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000

@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { IoLogoYoutube, IoLogoFacebook, IoMail, IoCall, IoLocationOutline, IoSend } from 'react-icons/io5';
+import { IoLogoYoutube, IoLogoFacebook, IoMail, IoCall, IoLocationOutline, IoSend, IoCheckmarkCircleOutline } from 'react-icons/io5';
 import styles from './page.module.css';
 
 const contactMethods = [
@@ -13,6 +13,37 @@ const contactMethods = [
 ];
 
 export default function ContactPage() {
+    const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+    const [sending, setSending] = useState(false);
+    const [sent, setSent] = useState(false);
+    const [error, setError] = useState('');
+
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        if (!form.name || !form.email || !form.subject || !form.message) {
+            setError('Please fill in all fields.');
+            return;
+        }
+        setError('');
+        setSending(true);
+        try {
+            const res = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(form),
+            });
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Failed to send message');
+            }
+            setSent(true);
+            setForm({ name: '', email: '', subject: '', message: '' });
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+        }
+        setSending(false);
+    }
+
     return (
         <div className={styles.page}>
             <section className={styles.hero}>
@@ -63,27 +94,41 @@ export default function ContactPage() {
                         {/* Contact Form */}
                         <motion.div className={styles.formCard} initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
                             <h2>Send a Message</h2>
-                            <form onSubmit={(e) => e.preventDefault()}>
-                                <div className="form-group">
-                                    <label htmlFor="name">Your Name</label>
-                                    <input id="name" type="text" className="input-field" placeholder="Enter your name" />
+                            {sent ? (
+                                <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+                                    <IoCheckmarkCircleOutline style={{ fontSize: '3rem', color: 'var(--sacred-gold)' }} />
+                                    <h3 style={{ margin: '1rem 0 0.5rem' }}>Message Sent!</h3>
+                                    <p style={{ color: '#666' }}>Thank you for reaching out. We&apos;ll get back to you soon.</p>
+                                    <button className="btn btn-secondary" style={{ marginTop: '1rem' }} onClick={() => setSent(false)}>
+                                        Send Another Message
+                                    </button>
                                 </div>
-                                <div className="form-group">
-                                    <label htmlFor="email">Email Address</label>
-                                    <input id="email" type="email" className="input-field" placeholder="Enter your email" />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="subject">Subject</label>
-                                    <input id="subject" type="text" className="input-field" placeholder="What is this about?" />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="message">Message</label>
-                                    <textarea id="message" className="input-field" placeholder="Your message..." rows={5}></textarea>
-                                </div>
-                                <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
-                                    <IoSend /> Send Message
-                                </button>
-                            </form>
+                            ) : (
+                                <form onSubmit={handleSubmit}>
+                                    <div className="form-group">
+                                        <label htmlFor="name">Your Name</label>
+                                        <input id="name" type="text" className="input-field" placeholder="Enter your name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="email">Email Address</label>
+                                        <input id="email" type="email" className="input-field" placeholder="Enter your email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="subject">Subject</label>
+                                        <input id="subject" type="text" className="input-field" placeholder="What is this about?" value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="message">Message</label>
+                                        <textarea id="message" className="input-field" placeholder="Your message..." rows={5} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}></textarea>
+                                    </div>
+                                    {error && (
+                                        <p style={{ color: '#e74c3c', fontSize: '0.9rem', margin: '0 0 1rem' }}>{error}</p>
+                                    )}
+                                    <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={sending}>
+                                        {sending ? 'Sending...' : <><IoSend /> Send Message</>}
+                                    </button>
+                                </form>
+                            )}
                         </motion.div>
                     </div>
                 </div>

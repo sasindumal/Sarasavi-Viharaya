@@ -11,6 +11,7 @@ import {
     IoFlagOutline,
     IoPricetagsOutline,
     IoPeopleOutline,
+    IoMailOutline,
     IoLogOutOutline,
     IoHomeOutline,
 } from 'react-icons/io5';
@@ -20,6 +21,7 @@ const navItems = [
     { href: '/admin', label: 'Dashboard', icon: <IoGridOutline /> },
     { href: '/admin/events', label: 'Events', icon: <IoCalendarOutline /> },
     { href: '/admin/milestones', label: 'Milestones', icon: <IoFlagOutline /> },
+    { href: '/admin/messages', label: 'Messages', icon: <IoMailOutline /> },
     { href: '/admin/tags', label: 'Tags', icon: <IoPricetagsOutline /> },
     { href: '/admin/users', label: 'Users', icon: <IoPeopleOutline /> },
 ];

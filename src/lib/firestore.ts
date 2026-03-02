@@ -13,7 +13,7 @@ import {
     setDoc,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import type { Event, Milestone, Tag, AppUser, Subscriber } from '@/types';
+import type { Event, Milestone, Tag, AppUser, Subscriber, ContactMessage } from '@/types';
 
 // ==================== EVENTS ====================
 
@@ -141,4 +141,25 @@ export async function addSubscriber(email: string, name?: string): Promise<strin
 
 export async function removeSubscriber(id: string): Promise<void> {
     await updateDoc(doc(db, 'subscribers', id), { isActive: false });
+}
+
+// ==================== CONTACT MESSAGES ====================
+
+export async function getContactMessages(): Promise<ContactMessage[]> {
+    const q = query(collection(db, 'contactMessages'), orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as ContactMessage));
+}
+
+export async function addContactMessage(data: Omit<ContactMessage, 'id'>): Promise<string> {
+    const docRef = await addDoc(collection(db, 'contactMessages'), data);
+    return docRef.id;
+}
+
+export async function markMessageRead(id: string, isRead: boolean): Promise<void> {
+    await updateDoc(doc(db, 'contactMessages', id), { isRead });
+}
+
+export async function deleteContactMessage(id: string): Promise<void> {
+    await deleteDoc(doc(db, 'contactMessages', id));
 }
