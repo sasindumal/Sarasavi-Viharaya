@@ -147,15 +147,17 @@ export default function AdminBlessingsPage() {
         if (!form.personName || !form.message) return;
         setSaving(true);
         try {
-            const data = {
+            const data: Record<string, unknown> = {
                 personName: form.personName,
                 personTitle: form.personTitle,
                 message: form.message,
-                personPhoto: form.personPhoto || undefined,
                 order: form.order,
             };
+            if (form.personPhoto) {
+                data.personPhoto = form.personPhoto;
+            }
             if (editItem) {
-                await updateBlessing(editItem.id, data);
+                await updateBlessing(editItem.id, data as Partial<BlessingMessage>);
             } else {
                 await createBlessing(data as Omit<BlessingMessage, 'id'>);
             }

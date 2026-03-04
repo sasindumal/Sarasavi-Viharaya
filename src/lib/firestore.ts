@@ -187,7 +187,7 @@ export async function createBlessing(data: Omit<BlessingMessage, 'id'>): Promise
 }
 
 export async function updateBlessing(id: string, data: Partial<BlessingMessage>): Promise<void> {
-    await updateDoc(doc(db, 'blessings', id), data);
+    await updateDoc(doc(db, 'blessings', id), data as Record<string, unknown>);
 }
 
 export async function deleteBlessing(id: string): Promise<void> {
@@ -208,7 +208,7 @@ export async function createAcknowledgment(data: Omit<Acknowledgment, 'id'>): Pr
 }
 
 export async function updateAcknowledgment(id: string, data: Partial<Acknowledgment>): Promise<void> {
-    await updateDoc(doc(db, 'acknowledgments', id), data);
+    await updateDoc(doc(db, 'acknowledgments', id), data as Record<string, unknown>);
 }
 
 export async function deleteAcknowledgment(id: string): Promise<void> {

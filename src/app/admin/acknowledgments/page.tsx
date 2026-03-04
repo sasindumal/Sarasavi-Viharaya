@@ -209,15 +209,17 @@ export default function AdminAcknowledgmentsPage() {
         if (!form.name || !form.description) return;
         setSaving(true);
         try {
-            const data = {
+            const data: Record<string, unknown> = {
                 name: form.name,
                 category: form.category,
                 description: form.description,
-                photo: form.photo || undefined,
                 order: form.order,
             };
+            if (form.photo) {
+                data.photo = form.photo;
+            }
             if (editItem) {
-                await updateAcknowledgment(editItem.id, data);
+                await updateAcknowledgment(editItem.id, data as Partial<Acknowledgment>);
             } else {
                 await createAcknowledgment(data as Omit<Acknowledgment, 'id'>);
             }
