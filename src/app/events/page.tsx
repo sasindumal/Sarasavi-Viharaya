@@ -7,6 +7,7 @@ import { IoCalendarOutline, IoTimeOutline, IoSearchOutline, IoFilterOutline, IoI
 import { GiLotusFlower } from 'react-icons/gi';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import FormattedText from '@/components/ui/FormattedText';
 import { getEvents, getTags } from '@/lib/firestore';
 import type { Event, Tag } from '@/types';
 import styles from './page.module.css';
@@ -160,7 +161,7 @@ export default function EventsPage() {
                                                 ))}
                                             </div>
                                             <h3>{event.title}</h3>
-                                            <p>{event.description}</p>
+                                            <FormattedText text={event.description} />
                                             <div className={styles.eventMeta}>
                                                 <span><IoCalendarOutline /> {new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                                                 <span><IoTimeOutline /> {event.duration}</span>

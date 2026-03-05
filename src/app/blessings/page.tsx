@@ -6,6 +6,7 @@ import { GiLotusFlower } from 'react-icons/gi';
 import { IoPersonOutline } from 'react-icons/io5';
 import { getBlessings } from '@/lib/firestore';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import FormattedText from '@/components/ui/FormattedText';
 import type { BlessingMessage } from '@/types';
 import styles from './page.module.css';
 
@@ -62,7 +63,7 @@ export default function BlessingsPage() {
                                     </div>
                                 </div>
                                 <div className={styles.quoteDecor}>&ldquo;</div>
-                                <p className={styles.message}>{blessing.message}</p>
+                                <FormattedText text={blessing.message} className={styles.message} />
                             </motion.div>
                         ))}
                     </div>

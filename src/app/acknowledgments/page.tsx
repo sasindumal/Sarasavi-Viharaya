@@ -6,6 +6,7 @@ import { IoHeartOutline, IoPersonOutline, IoConstructOutline, IoStarOutline } fr
 import { GiLotusFlower } from 'react-icons/gi';
 import { getAcknowledgments } from '@/lib/firestore';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import FormattedText from '@/components/ui/FormattedText';
 import type { Acknowledgment } from '@/types';
 import styles from './page.module.css';
 
@@ -65,7 +66,7 @@ export default function AcknowledgmentsPage() {
                                                 )}
                                             </div>
                                             <h4>{item.name}</h4>
-                                            <p>{item.description}</p>
+                                            <FormattedText text={item.description} />
                                         </motion.div>
                                     ))}
                                 </div>

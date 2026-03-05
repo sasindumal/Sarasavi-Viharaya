@@ -9,6 +9,7 @@ import { GiLotusFlower } from 'react-icons/gi';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 import PhotoAlbum from '@/components/ui/PhotoAlbum';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import FormattedText from '@/components/ui/FormattedText';
 import { getEvent } from '@/lib/firestore';
 import type { Event } from '@/types';
 import styles from './page.module.css';
@@ -82,7 +83,7 @@ export default function EventDetailPage() {
                     {/* Description */}
                     <motion.div className={styles.descCard} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                         <h2>About This Event</h2>
-                        <p>{event.description}</p>
+                        <FormattedText text={event.description} />
                     </motion.div>
 
                     {/* Photo Album */}

@@ -409,13 +409,14 @@ export default function AdminEventsPage() {
                                 <th>Title</th>
                                 <th>Date</th>
                                 <th>Tags</th>
+                                <th>Photos</th>
                                 <th>Published</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filtered.length === 0 ? (
-                                <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem', opacity: 0.5 }}>No events found</td></tr>
+                                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '2rem', opacity: 0.5 }}>No events found</td></tr>
                             ) : (
                                 filtered.map(evt => (
                                     <tr key={evt.id}>
@@ -425,6 +426,19 @@ export default function AdminEventsPage() {
                                             <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
                                                 {evt.tags.slice(0, 3).map(t => <TagChip key={t} label={t} />)}
                                             </div>
+                                        </td>
+                                        <td>
+                                            <span style={{
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '4px',
+                                                fontSize: '0.85rem',
+                                                color: evt.photos.length > 0 ? '#F5B926' : '#999',
+                                                fontWeight: evt.photos.length > 0 ? 600 : 400,
+                                            }}>
+                                                <IoImagesOutline style={{ fontSize: '1rem' }} />
+                                                {evt.photos.length}
+                                            </span>
                                         </td>
                                         <td>
                                             <span className={evt.isPublished ? 'badge badge-gold' : 'badge badge-red'}>

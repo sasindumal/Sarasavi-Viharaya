@@ -7,6 +7,7 @@ import { IoSearchOutline, IoCalendarOutline, IoTimeOutline, IoImagesOutline, IoA
 import { GiLotusFlower, GiTempleGate } from 'react-icons/gi';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import FormattedText from '@/components/ui/FormattedText';
 import { getMilestones } from '@/lib/firestore';
 import type { Milestone } from '@/types';
 import styles from './page.module.css';
@@ -83,7 +84,7 @@ export default function MilestonesPage() {
                                         <div className={styles.upcomingInfo}>
                                             <span className="badge badge-red">Upcoming</span>
                                             <h3>{m.title}</h3>
-                                            <p>{m.description}</p>
+                                            <FormattedText text={m.description} />
                                             <CountdownTimer targetDate={m.date} compact />
                                         </div>
                                         <span className={styles.cardArrow}><IoArrowForward /></span>
@@ -113,7 +114,7 @@ export default function MilestonesPage() {
                                             <IoCalendarOutline /> {new Date(m.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                                         </span>
                                         <h3>{m.title}</h3>
-                                        <p>{m.description}</p>
+                                        <FormattedText text={m.description} />
                                         {m.duration && <span className={styles.duration}><IoTimeOutline /> {m.duration}</span>}
                                     </div>
                                     <span className={styles.cardArrow}><IoArrowForward /></span>

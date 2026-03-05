@@ -376,19 +376,33 @@ export default function AdminMilestonesPage() {
                                 <th>Title</th>
                                 <th>Date</th>
                                 <th>Duration</th>
+                                <th>Photos</th>
                                 <th>Published</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filtered.length === 0 ? (
-                                <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem', opacity: 0.5 }}>No milestones found</td></tr>
+                                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '2rem', opacity: 0.5 }}>No milestones found</td></tr>
                             ) : (
                                 filtered.map(ms => (
                                     <tr key={ms.id}>
                                         <td style={{ fontWeight: 600 }}>{ms.title}</td>
                                         <td>{new Date(ms.date).toLocaleDateString()}</td>
                                         <td>{ms.duration}</td>
+                                        <td>
+                                            <span style={{
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '4px',
+                                                fontSize: '0.85rem',
+                                                color: ms.photos.length > 0 ? '#F5B926' : '#999',
+                                                fontWeight: ms.photos.length > 0 ? 600 : 400,
+                                            }}>
+                                                <IoImagesOutline style={{ fontSize: '1rem' }} />
+                                                {ms.photos.length}
+                                            </span>
+                                        </td>
                                         <td>
                                             <span className={ms.isPublished ? 'badge badge-gold' : 'badge badge-red'}>
                                                 {ms.isPublished ? 'Published' : 'Draft'}

@@ -9,6 +9,7 @@ import { GiLotusFlower, GiTempleGate } from 'react-icons/gi';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 import PhotoAlbum from '@/components/ui/PhotoAlbum';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import FormattedText from '@/components/ui/FormattedText';
 import { getMilestone } from '@/lib/firestore';
 import type { Milestone } from '@/types';
 import styles from './page.module.css';
@@ -82,7 +83,7 @@ export default function MilestoneDetailPage() {
                     {/* Description */}
                     <motion.div className={styles.descCard} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                         <h2>About This Milestone</h2>
-                        <p>{milestone.description}</p>
+                        <FormattedText text={milestone.description} />
                     </motion.div>
 
                     {/* Photo Album */}
