@@ -202,7 +202,7 @@
 
 .timelineCard {
     display: flex;
-    align-items: stretch;
+    flex-direction: column;
     text-decoration: none;
     color: var(--void-ink);
     background: var(--glass-bg);
@@ -220,16 +220,15 @@
 }
 
 .timelineImage {
-    width: 200px;
-    flex-shrink: 0;
+    width: 100%;
     overflow: hidden;
     position: relative;
 }
 
 .timelineImage img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    display: block;
     transition: transform var(--transition-slow);
 }
 
@@ -288,15 +287,6 @@
 }
 
 @media (max-width: 768px) {
-    .timelineCard {
-        flex-direction: column;
-    }
-
-    .timelineImage {
-        width: 100%;
-        height: 160px;
-    }
-
     .controls {
         flex-direction: column;
     }
