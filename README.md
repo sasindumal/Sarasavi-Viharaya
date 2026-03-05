@@ -6,6 +6,7 @@ A modern, full-stack Next.js website for the Sarasavi Viharaya Buddhist Temple a
 
 - **Public Pages** — Home (hero slideshow), History, About, Events, Milestones, Blessings, Acknowledgments, Contact
 - **Admin Dashboard** — Role-based (super_admin, admin, moderator) with full CRUD for events, milestones, blessings, acknowledgments, tags, and users
+- **Page Visibility** — Admin can show/hide pages from the header navigation, footer links, and homepage explore section
 - **Role Hierarchy** — super_admin manages admins & moderators; admin manages moderators only; moderators manage content only
 - **Change Password** — All admin roles can change their own password from the sidebar
 - **Contact Message Inbox** — Admin Messages page with read/unread status, search, filters, detail view, and reply via email
@@ -212,6 +213,12 @@ service cloud.firestore {
       allow create: if true;
       allow update, delete: if canManage();
     }
+
+    // Site Config — public read (page visibility), admin write
+    match /siteConfig/{configId} {
+      allow read: if true;
+      allow write: if canManage();
+    }
   }
 }
 ```
@@ -356,6 +363,7 @@ npm run dev
 - [ ] Mark messages as read/unread, delete messages
 - [ ] **Blessings** page — add/edit/delete blessings, seed existing data, reorder, upload photos
 - [ ] **Acknowledgments** page — add/edit/delete with category filter, seed existing data, reorder
+- [ ] **Pages** page — toggle page visibility in header, footer, and homepage; verify changes apply
 - [ ] **Change Password** — click in sidebar, enter current + new password, verify update
 - [ ] **Role Hierarchy** — super_admin sees all users, admin sees only moderators
 - [ ] **Change Role** — super_admin can change admin↔moderator, admin cannot change admin roles
@@ -488,6 +496,7 @@ sarasavi-viharaya/
 │   │   │   ├── milestones/page.tsx     # Milestones CRUD + image uploads
 │   │   │   ├── blessings/page.tsx      # Blessings CRUD + photo upload + seed
 │   │   │   ├── acknowledgments/page.tsx# Acknowledgments CRUD + categories + seed
+│   │   │   ├── pages/page.tsx          # Page visibility management
 │   │   │   ├── messages/page.tsx       # Contact message inbox
 │   │   │   ├── tags/page.tsx           # Tags management
 │   │   │   └── users/page.tsx          # User management + role change

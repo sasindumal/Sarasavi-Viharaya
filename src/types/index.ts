@@ -85,3 +85,19 @@ export interface ContactMessage {
   isRead: boolean;
   createdAt: string;
 }
+
+// ==================== PAGE VISIBILITY ====================
+
+export interface PageConfig {
+  slug: string;        // e.g. '/history', '/events'
+  label: string;       // Display name, e.g. 'History'
+  showInHeader: boolean;
+  showInFooter: boolean;
+  showInHome: boolean;  // Show in homepage "Explore" section
+}
+
+export interface PageVisibility {
+  pages: PageConfig[];
+  updatedAt: string;
+  updatedBy: string;
+}

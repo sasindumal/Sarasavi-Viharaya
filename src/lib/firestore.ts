@@ -13,7 +13,7 @@ import {
     setDoc,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import type { Event, Milestone, Tag, AppUser, Subscriber, ContactMessage, BlessingMessage, Acknowledgment } from '@/types';
+import type { Event, Milestone, Tag, AppUser, Subscriber, ContactMessage, BlessingMessage, Acknowledgment, PageVisibility, PageConfig } from '@/types';
 
 // ==================== EVENTS ====================
 
@@ -213,4 +213,35 @@ export async function updateAcknowledgment(id: string, data: Partial<Acknowledgm
 
 export async function deleteAcknowledgment(id: string): Promise<void> {
     await deleteDoc(doc(db, 'acknowledgments', id));
+}
+
+// ==================== PAGE VISIBILITY ====================
+
+const defaultPages: PageConfig[] = [
+    { slug: '/', label: 'Home', showInHeader: true, showInFooter: false, showInHome: false },
+    { slug: '/history', label: 'History', showInHeader: true, showInFooter: true, showInHome: true },
+    { slug: '/milestones', label: 'Milestones', showInHeader: true, showInFooter: true, showInHome: true },
+    { slug: '/events', label: 'Events', showInHeader: true, showInFooter: true, showInHome: true },
+    { slug: '/blessings', label: 'Blessings', showInHeader: true, showInFooter: true, showInHome: true },
+    { slug: '/acknowledgments', label: 'Acknowledgments', showInHeader: true, showInFooter: true, showInHome: true },
+    { slug: '/about', label: 'About', showInHeader: true, showInFooter: true, showInHome: true },
+    { slug: '/contact', label: 'Contact', showInHeader: true, showInFooter: true, showInHome: false },
+];
+
+export async function getPageVisibility(): Promise<PageVisibility> {
+    const docRef = doc(db, 'siteConfig', 'pageVisibility');
+    const snapshot = await getDoc(docRef);
+    if (!snapshot.exists()) {
+        // Return defaults if no config yet
+        return {
+            pages: defaultPages,
+            updatedAt: new Date().toISOString(),
+            updatedBy: 'system',
+        };
+    }
+    return snapshot.data() as PageVisibility;
+}
+
+export async function updatePageVisibility(data: PageVisibility): Promise<void> {
+    await setDoc(doc(db, 'siteConfig', 'pageVisibility'), data);
 }

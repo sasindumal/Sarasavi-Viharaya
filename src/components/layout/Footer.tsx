@@ -1,10 +1,55 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { GiLotus } from 'react-icons/gi';
 import { IoLogoYoutube, IoLogoFacebook, IoMail, IoCall } from 'react-icons/io5';
+import { getPageVisibility } from '@/lib/firestore';
+import type { PageConfig } from '@/types';
 import styles from './Footer.module.css';
 
+const exploreLinks = [
+    { href: '/history', label: 'Our History' },
+    { href: '/milestones', label: 'Milestones' },
+    { href: '/events', label: 'Events' },
+    { href: '/blessings', label: 'Blessings' },
+    { href: '/acknowledgments', label: 'Acknowledgments' },
+];
+
+const quickLinks = [
+    { href: '/about', label: 'About' },
+    { href: '/contact', label: 'Contact Us' },
+];
+
 export default function Footer() {
+    const [visibleExploreSlugs, setVisibleExploreSlugs] = useState<Set<string>>(
+        new Set(exploreLinks.map(l => l.href))
+    );
+    const [visibleQuickSlugs, setVisibleQuickSlugs] = useState<Set<string>>(
+        new Set(quickLinks.map(l => l.href))
+    );
+
+    useEffect(() => {
+        async function loadVisibility() {
+            try {
+                const config = await getPageVisibility();
+                const footerSlugs = new Set(
+                    config.pages
+                        .filter((p: PageConfig) => p.showInFooter)
+                        .map((p: PageConfig) => p.slug)
+                );
+                setVisibleExploreSlugs(footerSlugs);
+                setVisibleQuickSlugs(footerSlugs);
+            } catch {
+                // On error keep all links shown
+            }
+        }
+        loadVisibility();
+    }, []);
+
+    const filteredExplore = exploreLinks.filter(l => visibleExploreSlugs.has(l.href));
+    const filteredQuick = quickLinks.filter(l => visibleQuickSlugs.has(l.href));
+
     return (
         <footer className={styles.footer}>
             <div className={styles.decorBorder}></div>
@@ -23,22 +68,23 @@ export default function Footer() {
                         </p>
                     </div>
 
-                    <div className={styles.links}>
-                        <h4>Explore</h4>
-                        <ul>
-                            <li><Link href="/history">Our History</Link></li>
-                            <li><Link href="/milestones">Milestones</Link></li>
-                            <li><Link href="/events">Events</Link></li>
-                            <li><Link href="/blessings">Blessings</Link></li>
-                            <li><Link href="/acknowledgments">Acknowledgments</Link></li>
-                        </ul>
-                    </div>
+                    {filteredExplore.length > 0 && (
+                        <div className={styles.links}>
+                            <h4>Explore</h4>
+                            <ul>
+                                {filteredExplore.map(link => (
+                                    <li key={link.href}><Link href={link.href}>{link.label}</Link></li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
 
                     <div className={styles.links}>
                         <h4>Quick Links</h4>
                         <ul>
-                            <li><Link href="/about">About</Link></li>
-                            <li><Link href="/contact">Contact Us</Link></li>
+                            {filteredQuick.map(link => (
+                                <li key={link.href}><Link href={link.href}>{link.label}</Link></li>
+                            ))}
                             <li><Link href="/admin/login">Admin Portal</Link></li>
                         </ul>
                     </div>

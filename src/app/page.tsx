@@ -7,9 +7,9 @@ import { IoCalendarOutline, IoTimeOutline, IoLocationOutline, IoSparkles, IoArro
 import SubscribeForm from '@/components/ui/SubscribeForm';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 import { GiLotusFlower, GiTempleGate, GiMeditation } from 'react-icons/gi';
-import { getEvents, getMilestones } from '@/lib/firestore';
+import { getEvents, getMilestones, getPageVisibility } from '@/lib/firestore';
 import { format } from 'date-fns';
-import type { Event, Milestone } from '@/types';
+import type { Event, Milestone, PageConfig } from '@/types';
 import styles from './page.module.css';
 
 const heroImages = [
@@ -131,6 +131,7 @@ export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
   const [upcomingMilestones, setUpcomingMilestones] = useState<Milestone[]>([]);
+  const [visibleSections, setVisibleSections] = useState(sections);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -155,6 +156,23 @@ export default function HomePage() {
       setUpcomingMilestones(futureMilestones);
     }
     fetchUpcoming();
+  }, []);
+
+  useEffect(() => {
+    async function loadVisibility() {
+      try {
+        const config = await getPageVisibility();
+        const homeSlugs = new Set(
+          config.pages
+            .filter((p: PageConfig) => p.showInHome)
+            .map((p: PageConfig) => p.slug)
+        );
+        setVisibleSections(sections.filter(sec => homeSlugs.has(sec.href)));
+      } catch {
+        setVisibleSections(sections);
+      }
+    }
+    loadVisibility();
   }, []);
 
   return (
@@ -359,7 +377,7 @@ export default function HomePage() {
           </div>
 
           <div className={styles.sectionsGrid}>
-            {sections.map((section, i) => (
+            {visibleSections.map((section, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 30 }}

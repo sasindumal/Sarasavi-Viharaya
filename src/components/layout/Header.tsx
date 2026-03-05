@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { IoMenu, IoClose } from 'react-icons/io5';
 import { GiLotus } from 'react-icons/gi';
+import { getPageVisibility } from '@/lib/firestore';
+import type { PageConfig } from '@/types';
 import styles from './Header.module.css';
 
-const navLinks = [
+const allNavLinks = [
     { href: '/', label: 'Home' },
     { href: '/history', label: 'History' },
     { href: '/milestones', label: 'Milestones' },
@@ -21,6 +23,7 @@ const navLinks = [
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [visibleLinks, setVisibleLinks] = useState(allNavLinks);
     const pathname = usePathname();
 
     useEffect(() => {
@@ -32,6 +35,24 @@ export default function Header() {
     useEffect(() => {
         setIsOpen(false);
     }, [pathname]);
+
+    useEffect(() => {
+        async function loadVisibility() {
+            try {
+                const config = await getPageVisibility();
+                const headerSlugs = new Set(
+                    config.pages
+                        .filter((p: PageConfig) => p.showInHeader)
+                        .map((p: PageConfig) => p.slug)
+                );
+                setVisibleLinks(allNavLinks.filter(link => headerSlugs.has(link.href)));
+            } catch {
+                // On error, show all links as a safe fallback
+                setVisibleLinks(allNavLinks);
+            }
+        }
+        loadVisibility();
+    }, []);
 
     return (
         <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
@@ -45,7 +66,7 @@ export default function Header() {
                 </Link>
 
                 <nav className={`${styles.nav} ${isOpen ? styles.navOpen : ''}`}>
-                    {navLinks.map((link) => (
+                    {visibleLinks.map((link) => (
                         <Link
                             key={link.href}
                             href={link.href}
