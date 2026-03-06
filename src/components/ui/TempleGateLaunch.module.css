@@ -1,0 +1,833 @@
+/* ============================================
+   TEMPLE GATE LAUNCH CEREMONY
+   ============================================ */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    overflow: hidden;
+    perspective: 1200px;
+    background: radial-gradient(ellipse at center, #1a1919 0%, #0d0c0c 100%);
+    transition: opacity 0.8s ease;
+}
+
+.overlay.opened {
+    pointer-events: none;
+}
+
+.overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* === AMBIENT BACKGROUND === */
+.ambientGlow {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 50% 60%, rgba(245, 185, 38, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 30% 30%, rgba(237, 159, 45, 0.04) 0%, transparent 40%),
+        radial-gradient(circle at 70% 70%, rgba(245, 185, 38, 0.04) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+/* Subtle floating dust particles */
+.dustParticle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: rgba(245, 185, 38, 0.3);
+    animation: dustFloat linear infinite;
+    pointer-events: none;
+}
+
+@keyframes dustFloat {
+    0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+    }
+}
+
+/* === GATE CONTAINER === */
+.gateContainer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    transform-style: preserve-3d;
+}
+
+/* === INDIVIDUAL GATE DOORS === */
+.gateLeft,
+.gateRight {
+    position: relative;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(180deg,
+            #2a1f0e 0%,
+            #3d2b12 15%,
+            #4a3318 30%,
+            #3d2b12 50%,
+            #2a1f0e 70%,
+            #1f170a 100%);
+    box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.5);
+    transition: transform 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform-style: preserve-3d;
+    overflow: hidden;
+}
+
+.gateLeft {
+    transform-origin: left center;
+    border-right: 3px solid rgba(245, 185, 38, 0.4);
+}
+
+.gateRight {
+    transform-origin: right center;
+    border-left: 3px solid rgba(245, 185, 38, 0.4);
+}
+
+/* Gate opening animation */
+.opened .gateLeft {
+    transform: rotateY(-105deg);
+}
+
+.opened .gateRight {
+    transform: rotateY(105deg);
+}
+
+/* === GATE ORNAMENTAL BORDER === */
+.gateBorderOuter {
+    position: absolute;
+    inset: 12px;
+    border: 2px solid rgba(245, 185, 38, 0.25);
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.gateBorderInner {
+    position: absolute;
+    inset: 24px;
+    border: 1px solid rgba(245, 185, 38, 0.15);
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+/* === CORNER ORNAMENTS === */
+.cornerOrnament {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    pointer-events: none;
+}
+
+.cornerOrnament::before,
+.cornerOrnament::after {
+    content: '';
+    position: absolute;
+    background: linear-gradient(135deg, rgba(245, 185, 38, 0.5), rgba(237, 159, 45, 0.3));
+}
+
+.cornerOrnament.topLeft {
+    top: 30px;
+    left: 30px;
+}
+
+.cornerOrnament.topLeft::before {
+    width: 40px;
+    height: 2px;
+    top: 0;
+    left: 0;
+}
+
+.cornerOrnament.topLeft::after {
+    width: 2px;
+    height: 40px;
+    top: 0;
+    left: 0;
+}
+
+.cornerOrnament.topRight {
+    top: 30px;
+    right: 30px;
+}
+
+.cornerOrnament.topRight::before {
+    width: 40px;
+    height: 2px;
+    top: 0;
+    right: 0;
+}
+
+.cornerOrnament.topRight::after {
+    width: 2px;
+    height: 40px;
+    top: 0;
+    right: 0;
+}
+
+.cornerOrnament.bottomLeft {
+    bottom: 30px;
+    left: 30px;
+}
+
+.cornerOrnament.bottomLeft::before {
+    width: 40px;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+}
+
+.cornerOrnament.bottomLeft::after {
+    width: 2px;
+    height: 40px;
+    bottom: 0;
+    left: 0;
+}
+
+.cornerOrnament.bottomRight {
+    bottom: 30px;
+    right: 30px;
+}
+
+.cornerOrnament.bottomRight::before {
+    width: 40px;
+    height: 2px;
+    bottom: 0;
+    right: 0;
+}
+
+.cornerOrnament.bottomRight::after {
+    width: 2px;
+    height: 40px;
+    bottom: 0;
+    right: 0;
+}
+
+/* === GATE CARVINGS — SVG PATTERNS === */
+.carvingTop {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.5;
+}
+
+.carvingDharmaWheel {
+    width: 80px;
+    height: 80px;
+    border: 2px solid rgba(245, 185, 38, 0.4);
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carvingDharmaWheel::before {
+    content: '☸';
+    font-size: 40px;
+    color: rgba(245, 185, 38, 0.5);
+}
+
+.carvingLotus {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 50px;
+    color: rgba(245, 185, 38, 0.25);
+    text-align: center;
+}
+
+.carvingBottom {
+    position: absolute;
+    bottom: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    opacity: 0.4;
+}
+
+/* Horizontal decorative line on gates */
+.carvingLine {
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(245, 185, 38, 0.35), transparent);
+    position: absolute;
+    left: 20%;
+}
+
+/* Stupa silhouette carving */
+.stupaCarving {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 90px;
+    opacity: 0.2;
+}
+
+.stupaCarving::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 5px;
+    right: 5px;
+    height: 20px;
+    background: rgba(245, 185, 38, 0.5);
+    border-radius: 2px;
+}
+
+.stupaCarving::after {
+    content: '';
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50% 50% 5px 5px;
+    background: rgba(245, 185, 38, 0.5);
+}
+
+/* === GATE RING HANDLES === */
+.gateHandle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(245, 185, 38, 0.6);
+    border-radius: 50%;
+    box-shadow:
+        0 0 15px rgba(245, 185, 38, 0.2),
+        inset 0 0 8px rgba(245, 185, 38, 0.1);
+}
+
+.gateLeft .gateHandle {
+    right: 25px;
+}
+
+.gateRight .gateHandle {
+    left: 25px;
+}
+
+.gateHandle::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background: rgba(245, 185, 38, 0.5);
+    border-radius: 50%;
+}
+
+/* === VERTICAL DECORATIVE STRIPS === */
+.verticalStrip {
+    position: absolute;
+    top: 5%;
+    bottom: 5%;
+    width: 1px;
+    background: linear-gradient(180deg,
+            transparent 0%,
+            rgba(245, 185, 38, 0.2) 20%,
+            rgba(245, 185, 38, 0.3) 50%,
+            rgba(245, 185, 38, 0.2) 80%,
+            transparent 100%);
+}
+
+.gateLeft .verticalStrip:nth-child(1) {
+    left: 15%;
+}
+
+.gateLeft .verticalStrip:nth-child(2) {
+    right: 15%;
+}
+
+.gateRight .verticalStrip:nth-child(1) {
+    left: 15%;
+}
+
+.gateRight .verticalStrip:nth-child(2) {
+    right: 15%;
+}
+
+/* === CENTER CONTENT (above both gates) === */
+.centerContent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    pointer-events: none;
+    text-align: center;
+    padding: 2rem;
+}
+
+.centerContent>* {
+    pointer-events: auto;
+}
+
+/* Decorative top arc */
+.decorativeArc {
+    position: absolute;
+    top: 4%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 60px;
+    border-top: 2px solid rgba(245, 185, 38, 0.3);
+    border-left: 2px solid rgba(245, 185, 38, 0.3);
+    border-right: 2px solid rgba(245, 185, 38, 0.3);
+    border-radius: 150px 150px 0 0;
+    pointer-events: none;
+}
+
+.decorativeArc::after {
+    content: '☸';
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    color: rgba(245, 185, 38, 0.5);
+    background: #1a1919;
+    padding: 0 10px;
+}
+
+/* Ceremony label */
+.ceremonyLabel {
+    font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+    font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(245, 185, 38, 0.6);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.ceremonyLabel::before,
+.ceremonyLabel::after {
+    content: '✦';
+    margin: 0 0.75rem;
+    font-size: 0.5em;
+    vertical-align: middle;
+}
+
+/* Lotus icon */
+.lotusSymbol {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    color: var(--sacred-gold);
+    margin-bottom: 0.75rem;
+    filter: drop-shadow(0 0 20px rgba(245, 185, 38, 0.4));
+    animation: gentlePulse 3s ease-in-out infinite;
+}
+
+@keyframes gentlePulse {
+
+    0%,
+    100% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+/* Title */
+.title {
+    font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.6rem, 4.5vw, 3.2rem);
+    font-weight: 700;
+    color: var(--nirvana-white);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.25rem;
+    text-shadow: 0 0 40px rgba(245, 185, 38, 0.3);
+}
+
+/* Sinhala subtitle */
+.sinhalaTitle {
+    font-size: clamp(1rem, 2.5vw, 1.6rem);
+    color: rgba(245, 185, 38, 0.7);
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+}
+
+/* Gold divider */
+.goldDivider {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--sacred-gold), transparent);
+    margin: 0 auto 1.5rem;
+    position: relative;
+}
+
+.goldDivider::after {
+    content: '◆';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 8px;
+    color: var(--sacred-gold);
+    background: rgba(26, 25, 25, 0.8);
+    padding: 0 8px;
+}
+
+/* Chief guest section */
+.chiefGuestSection {
+    margin-bottom: 2rem;
+}
+
+.chiefGuestLabel {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.6rem, 1vw, 0.75rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 254, 0.4);
+    margin-bottom: 0.5rem;
+}
+
+.chiefGuestName {
+    font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+    font-size: clamp(1rem, 2.5vw, 1.6rem);
+    font-weight: 600;
+    color: var(--sacred-gold);
+    letter-spacing: 0.04em;
+    text-shadow: 0 0 30px rgba(245, 185, 38, 0.3);
+}
+
+.chiefGuestTitle {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.75rem, 1.3vw, 0.95rem);
+    color: rgba(255, 255, 254, 0.5);
+    margin-top: 0.25rem;
+    font-weight: 300;
+}
+
+/* === LAUNCH BUTTON === */
+.launchBtnWrapper {
+    position: relative;
+    margin-top: 1rem;
+}
+
+.launchBtn {
+    position: relative;
+    padding: 1rem 3rem;
+    font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+    font-size: clamp(0.85rem, 1.5vw, 1.05rem);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--void-ink);
+    background: linear-gradient(135deg, var(--sacred-gold) 0%, #e8a820 50%, var(--saffron-amber) 100%);
+    border: 2px solid rgba(245, 185, 38, 0.6);
+    border-radius: 60px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow:
+        0 0 30px rgba(245, 185, 38, 0.3),
+        0 0 60px rgba(245, 185, 38, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    z-index: 1;
+}
+
+.launchBtn::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 62px;
+    background: linear-gradient(135deg, var(--sacred-gold), var(--saffron-amber), var(--sacred-gold));
+    z-index: -1;
+    animation: borderShimmer 3s linear infinite;
+    background-size: 200% 200%;
+}
+
+@keyframes borderShimmer {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.launchBtn:hover {
+    transform: scale(1.06);
+    box-shadow:
+        0 0 50px rgba(245, 185, 38, 0.5),
+        0 0 100px rgba(245, 185, 38, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.launchBtn:active {
+    transform: scale(0.98);
+}
+
+/* Pulsing ring around button */
+.pulseRing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 60px;
+    border: 1px solid rgba(245, 185, 38, 0.4);
+    animation: pulseRingAnim 2.5s ease-out infinite;
+    pointer-events: none;
+}
+
+.pulseRing:nth-child(2) {
+    animation-delay: 0.8s;
+}
+
+.pulseRing:nth-child(3) {
+    animation-delay: 1.6s;
+}
+
+@keyframes pulseRingAnim {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.6);
+        opacity: 0;
+    }
+}
+
+/* === LIGHT RAYS (appear on open) === */
+.lightRays {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    transition: all 1.5s ease;
+    opacity: 0;
+    z-index: 5;
+}
+
+.opened .lightRays {
+    width: 200vw;
+    height: 200vh;
+    opacity: 1;
+}
+
+.lightRay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 50%;
+    background: linear-gradient(to top, rgba(245, 185, 38, 0.6), transparent);
+    transform-origin: bottom center;
+}
+
+/* === GOLDEN PARTICLES (appear on open) === */
+.particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 6;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.opened .particles {
+    opacity: 1;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 185, 38, 0.9), rgba(245, 185, 38, 0));
+    animation: particleBurst 2s ease-out forwards;
+    opacity: 0;
+}
+
+.opened .particle {
+    opacity: 1;
+}
+
+@keyframes particleBurst {
+    0% {
+        transform: translate(0, 0) scale(0);
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: var(--particle-end) scale(0);
+        opacity: 0;
+    }
+}
+
+/* === BOTTOM TEXT === */
+.bottomText {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+}
+
+.dateText {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.65rem, 1vw, 0.8rem);
+    letter-spacing: 0.2em;
+    color: rgba(255, 255, 254, 0.3);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .decorativeArc {
+        width: 200px;
+        height: 40px;
+    }
+
+    .carvingDharmaWheel {
+        width: 50px;
+        height: 50px;
+    }
+
+    .carvingDharmaWheel::before {
+        font-size: 28px;
+    }
+
+    .carvingLotus {
+        font-size: 35px;
+    }
+
+    .gateHandle {
+        width: 30px;
+        height: 30px;
+    }
+
+    .cornerOrnament {
+        width: 40px;
+        height: 40px;
+    }
+
+    .cornerOrnament.topLeft,
+    .cornerOrnament.topRight {
+        top: 20px;
+    }
+
+    .cornerOrnament.bottomLeft,
+    .cornerOrnament.bottomRight {
+        bottom: 20px;
+    }
+
+    .cornerOrnament.topLeft,
+    .cornerOrnament.bottomLeft {
+        left: 20px;
+    }
+
+    .cornerOrnament.topRight,
+    .cornerOrnament.bottomRight {
+        right: 20px;
+    }
+
+    .cornerOrnament::before {
+        width: 25px !important;
+    }
+
+    .cornerOrnament::after {
+        height: 25px !important;
+    }
+
+    .launchBtn {
+        padding: 0.85rem 2rem;
+    }
+
+    .stupaCarving {
+        width: 40px;
+        height: 60px;
+        bottom: 20%;
+    }
+
+    .gateBorderOuter {
+        inset: 8px;
+    }
+
+    .gateBorderInner {
+        inset: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .decorativeArc {
+        display: none;
+    }
+
+    .cornerOrnament {
+        width: 30px;
+        height: 30px;
+    }
+
+    .gateHandle {
+        width: 24px;
+        height: 24px;
+        border-width: 2px;
+    }
+
+    .gateLeft .gateHandle {
+        right: 15px;
+    }
+
+    .gateRight .gateHandle {
+        left: 15px;
+    }
+
+    .carvingTop,
+    .stupaCarving {
+        display: none;
+    }
+}

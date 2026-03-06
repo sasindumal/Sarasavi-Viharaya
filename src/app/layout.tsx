@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BodhiLeaves from "@/components/ui/BodhiLeaves";
+import TempleGateLaunch from "@/components/ui/TempleGateLaunch";
 
 export const metadata: Metadata = {
   title: "Sarasavi Viharaya — Buddhist Temple of University of Jaffna",
@@ -30,6 +32,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* Temple Gate Launch Ceremony Overlay */}
+        <Suspense>
+          <TempleGateLaunch
+            chiefGuestName="Professor S. Srisatkunarajah"
+            chiefGuestTitle="Vice Chancellor, University of Jaffna"
+          />
+        </Suspense>
         <div className="bodhi-pattern" />
         <BodhiLeaves />
         <Header />
@@ -41,3 +50,4 @@ export default function RootLayout({
     </html>
   );
 }
+
