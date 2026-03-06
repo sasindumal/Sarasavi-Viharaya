@@ -13,6 +13,9 @@ import {
     IoCloudUploadOutline,
     IoCloseOutline,
     IoImagesOutline,
+    IoChevronUpOutline,
+    IoChevronDownOutline,
+    IoSwapVerticalOutline,
 } from 'react-icons/io5';
 import { useAuth, canManageContent } from '@/lib/auth';
 import { getEvents, createEvent, updateEvent, deleteEvent, getTags } from '@/lib/firestore';
@@ -21,6 +24,9 @@ import Modal from '@/components/ui/Modal';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import TagChip from '@/components/ui/TagChip';
 import type { Event, Tag } from '@/types';
+
+type SortField = 'title' | 'date' | 'tags' | 'photos' | 'published' | null;
+type SortDir = 'asc' | 'desc';
 
 const s: Record<string, React.CSSProperties> = {
     header: {
@@ -242,6 +248,8 @@ export default function AdminEventsPage() {
     const [tags, setTags] = useState<Tag[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+    const [sortField, setSortField] = useState<SortField>('date');
+    const [sortDir, setSortDir] = useState<SortDir>('desc');
     const [modalOpen, setModalOpen] = useState(false);
     const [editingEvent, setEditingEvent] = useState<Event | null>(null);
     const [form, setForm] = useState<Omit<Event, 'id'>>(EmptyForm());
@@ -372,9 +380,37 @@ export default function AdminEventsPage() {
         setForm(prev => ({ ...prev, photos: prev.photos.filter((_, i) => i !== index) }));
     }
 
-    const filtered = events.filter(e =>
-        e.title.toLowerCase().includes(search.toLowerCase())
-    );
+    function handleSort(field: SortField) {
+        if (sortField === field) {
+            if (sortDir === 'asc') setSortDir('desc');
+            else { setSortField(null); setSortDir('asc'); }
+        } else {
+            setSortField(field);
+            setSortDir('asc');
+        }
+    }
+
+    function SortIcon({ field }: { field: SortField }) {
+        if (sortField !== field) return <IoSwapVerticalOutline style={{ opacity: 0.3, fontSize: '0.8rem', marginLeft: '4px' }} />;
+        return sortDir === 'asc'
+            ? <IoChevronUpOutline style={{ fontSize: '0.8rem', marginLeft: '4px', color: '#F5B926' }} />
+            : <IoChevronDownOutline style={{ fontSize: '0.8rem', marginLeft: '4px', color: '#F5B926' }} />;
+    }
+
+    const filtered = events
+        .filter(e => e.title.toLowerCase().includes(search.toLowerCase()))
+        .sort((a, b) => {
+            if (!sortField) return 0;
+            const dir = sortDir === 'asc' ? 1 : -1;
+            switch (sortField) {
+                case 'title': return dir * a.title.localeCompare(b.title);
+                case 'date': return dir * (new Date(a.date).getTime() - new Date(b.date).getTime());
+                case 'tags': return dir * (a.tags.length - b.tags.length);
+                case 'photos': return dir * (a.photos.length - b.photos.length);
+                case 'published': return dir * (Number(a.isPublished) - Number(b.isPublished));
+                default: return 0;
+            }
+        });
 
     if (authLoading || loading) return <LoadingSpinner message="Loading events..." />;
     if (appUser && !canManageContent(appUser.role)) {
@@ -406,11 +442,11 @@ export default function AdminEventsPage() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Title</th>
-                                <th>Date</th>
-                                <th>Tags</th>
-                                <th>Photos</th>
-                                <th>Published</th>
+                                <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('title')}>Title <SortIcon field="title" /></th>
+                                <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('date')}>Date <SortIcon field="date" /></th>
+                                <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('tags')}>Tags <SortIcon field="tags" /></th>
+                                <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('photos')}>Photos <SortIcon field="photos" /></th>
+                                <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('published')}>Published <SortIcon field="published" /></th>
                                 <th>Actions</th>
                             </tr>
                         </thead>

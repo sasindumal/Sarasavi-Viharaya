@@ -13,6 +13,9 @@ import {
     IoCloudUploadOutline,
     IoCloseOutline,
     IoImagesOutline,
+    IoChevronUpOutline,
+    IoChevronDownOutline,
+    IoSwapVerticalOutline,
 } from 'react-icons/io5';
 import { useAuth, canManageContent } from '@/lib/auth';
 import { getMilestones, createMilestone, updateMilestone, deleteMilestone } from '@/lib/firestore';
@@ -20,6 +23,9 @@ import { uploadImage, uploadImagesWithProgress } from '@/lib/cloudinary';
 import Modal from '@/components/ui/Modal';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import type { Milestone } from '@/types';
+
+type SortField = 'title' | 'date' | 'duration' | 'photos' | 'published' | null;
+type SortDir = 'asc' | 'desc';
 
 const s: Record<string, React.CSSProperties> = {
     header: {
@@ -223,6 +229,8 @@ export default function AdminMilestonesPage() {
     const [milestones, setMilestones] = useState<Milestone[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+    const [sortField, setSortField] = useState<SortField>('date');
+    const [sortDir, setSortDir] = useState<SortDir>('desc');
     const [modalOpen, setModalOpen] = useState(false);
     const [editingMilestone, setEditingMilestone] = useState<Milestone | null>(null);
     const [form, setForm] = useState<Omit<Milestone, 'id'>>(EmptyForm());
@@ -341,9 +349,37 @@ export default function AdminMilestonesPage() {
         setForm(prev => ({ ...prev, photos: prev.photos.filter((_, i) => i !== index) }));
     }
 
-    const filtered = milestones.filter(m =>
-        m.title.toLowerCase().includes(search.toLowerCase())
-    );
+    function handleSort(field: SortField) {
+        if (sortField === field) {
+            if (sortDir === 'asc') setSortDir('desc');
+            else { setSortField(null); setSortDir('asc'); }
+        } else {
+            setSortField(field);
+            setSortDir('asc');
+        }
+    }
+
+    function SortIcon({ field }: { field: SortField }) {
+        if (sortField !== field) return <IoSwapVerticalOutline style={{ opacity: 0.3, fontSize: '0.8rem', marginLeft: '4px' }} />;
+        return sortDir === 'asc'
+            ? <IoChevronUpOutline style={{ fontSize: '0.8rem', marginLeft: '4px', color: '#F5B926' }} />
+            : <IoChevronDownOutline style={{ fontSize: '0.8rem', marginLeft: '4px', color: '#F5B926' }} />;
+    }
+
+    const filtered = milestones
+        .filter(m => m.title.toLowerCase().includes(search.toLowerCase()))
+        .sort((a, b) => {
+            if (!sortField) return 0;
+            const dir = sortDir === 'asc' ? 1 : -1;
+            switch (sortField) {
+                case 'title': return dir * a.title.localeCompare(b.title);
+                case 'date': return dir * (new Date(a.date).getTime() - new Date(b.date).getTime());
+                case 'duration': return dir * ((a.duration || '').localeCompare(b.duration || ''));
+                case 'photos': return dir * (a.photos.length - b.photos.length);
+                case 'published': return dir * (Number(a.isPublished) - Number(b.isPublished));
+                default: return 0;
+            }
+        });
 
     if (authLoading || loading) return <LoadingSpinner message="Loading milestones..." />;
     if (appUser && !canManageContent(appUser.role)) {
@@ -373,11 +409,11 @@ export default function AdminMilestonesPage() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Title</th>
-                                <th>Date</th>
-                                <th>Duration</th>
-                                <th>Photos</th>
-                                <th>Published</th>
+                                <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('title')}>Title <SortIcon field="title" /></th>
+                                <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('date')}>Date <SortIcon field="date" /></th>
+                                <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('duration')}>Duration <SortIcon field="duration" /></th>
+                                <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('photos')}>Photos <SortIcon field="photos" /></th>
+                                <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => handleSort('published')}>Published <SortIcon field="published" /></th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
