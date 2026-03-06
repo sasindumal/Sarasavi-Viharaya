@@ -213,10 +213,19 @@
 
 .upcomingImage {
   width: 100%;
-  height: 180px;
-  background-size: cover;
-  background-position: center;
   position: relative;
+  overflow: hidden;
+}
+
+.upcomingImage img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform var(--transition-slow);
+}
+
+.upcomingCard:hover .upcomingImage img {
+  transform: scale(1.05);
 }
 
 .upcomingImage::after {
@@ -227,6 +236,7 @@
   right: 0;
   height: 40px;
   background: linear-gradient(to top, var(--glass-bg), transparent);
+  z-index: 1;
 }
 
 .upcomingBody {

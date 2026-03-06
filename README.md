@@ -5,7 +5,7 @@ A modern, full-stack Next.js website for the Sarasavi Viharaya Buddhist Temple a
 ## ✨ Features
 
 - **Public Pages** — Home (hero slideshow), History, About, Events, Milestones, Blessings, Acknowledgments, Contact
-- **Admin Dashboard** — Role-based (super_admin, admin, moderator) with full CRUD for events, milestones, blessings, acknowledgments, tags, and users
+- **Admin Dashboard** — Role-based (super_admin, admin, moderator) with full CRUD for events, milestones, blessings, acknowledgments, tags, and usershttps://sarasaviviharaya.vercel.app
 - **Page Visibility** — Admin can show/hide pages from the header navigation, footer links, and homepage explore section
 - **Role Hierarchy** — super_admin manages admins & moderators; admin manages moderators only; moderators manage content only
 - **Change Password** — All admin roles can change their own password from the sidebar

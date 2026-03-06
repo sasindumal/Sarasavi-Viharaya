@@ -270,10 +270,9 @@ export default function HomePage() {
                 >
                   <Link href={`/events/${event.id}`} className={styles.upcomingCard}>
                     {event.coverPhoto && (
-                      <div
-                        className={styles.upcomingImage}
-                        style={{ backgroundImage: `url(${event.coverPhoto})` }}
-                      />
+                      <div className={styles.upcomingImage}>
+                        <img src={event.coverPhoto} alt={event.title} />
+                      </div>
                     )}
                     <div className={styles.upcomingBody}>
                       <div className={styles.upcomingMeta}>
@@ -332,10 +331,9 @@ export default function HomePage() {
                 >
                   <Link href={`/milestones/${milestone.id}`} className={styles.upcomingCard}>
                     {milestone.coverPhoto && (
-                      <div
-                        className={styles.upcomingImage}
-                        style={{ backgroundImage: `url(${milestone.coverPhoto})` }}
-                      />
+                      <div className={styles.upcomingImage}>
+                        <img src={milestone.coverPhoto} alt={milestone.title} />
+                      </div>
                     )}
                     <div className={styles.upcomingBody}>
                       <div className={styles.upcomingMeta}>

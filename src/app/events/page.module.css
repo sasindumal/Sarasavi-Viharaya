@@ -167,14 +167,13 @@
 
 .eventImage {
     position: relative;
-    height: 200px;
     overflow: hidden;
 }
 
 .eventImage img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    display: block;
     transition: transform var(--transition-slow);
 }
 
@@ -235,6 +234,7 @@
     flex: 1;
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
