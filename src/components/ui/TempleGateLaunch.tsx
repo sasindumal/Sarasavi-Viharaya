@@ -134,6 +134,10 @@ export default function TempleGateLaunch({
         ));
     }, []);
 
+    // After March 7, 2026 6:00 PM Sri Lanka time (UTC+5:30), never show again
+    const LAUNCH_DEADLINE = new Date('2026-03-07T12:30:00Z'); // 6:00 PM IST
+    if (new Date() > LAUNCH_DEADLINE) return null;
+
     // Don't render at all if already launched
     if (isLaunched && isHidden) return null;
 
