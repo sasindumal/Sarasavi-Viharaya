@@ -133,6 +133,26 @@
   border-radius: 4px;
 }
 
+/* === VIDEO SECTION === */
+.videoWrapper {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-lg);
+  background: var(--void-ink);
+  transition: box-shadow var(--transition-base);
+}
+
+.videoWrapper:hover {
+  box-shadow: var(--shadow-xl), 0 0 40px rgba(245, 185, 38, 0.15);
+}
+
+.videoPlayer {
+  width: 100%;
+  display: block;
+  border-radius: var(--radius-xl);
+}
+
 /* === STATS === */
 .statsSection {
   position: relative;

@@ -250,6 +250,33 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Sarasavi Viharaya Song Video */}
+      <section className="section">
+        <div className="container container-sm">
+          <div className="section-header">
+            <h2>Theme song of the Sarasavi Viharaya</h2>
+            <p>A musical tribute dedicated to the sacred Sarasavi Viharaya</p>
+          </div>
+          <motion.div
+            className={styles.videoWrapper}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <video
+              className={styles.videoPlayer}
+              src="/videos/sarasavi-song.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls
+            />
+          </motion.div>
+        </div>
+      </section>
+
       {/* Upcoming Events */}
       {upcomingEvents.length > 0 && (
         <section className="section">
