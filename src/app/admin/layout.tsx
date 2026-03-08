@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
@@ -21,8 +21,15 @@ import {
     IoLockClosedOutline,
     IoNotificationsOutline,
     IoNavigateOutline,
+    IoMenuOutline,
+    IoChevronBackOutline,
+    IoCloseOutline,
 } from 'react-icons/io5';
 import { GiLotusFlower } from 'react-icons/gi';
+
+const SIDEBAR_EXPANDED_WIDTH = 260;
+const SIDEBAR_COLLAPSED_WIDTH = 68;
+const MOBILE_BREAKPOINT = 768;
 
 const navItems = [
     { href: '/admin', label: 'Dashboard', icon: <IoGridOutline /> },
@@ -37,111 +44,14 @@ const navItems = [
     { href: '/admin/users', label: 'Users', icon: <IoPeopleOutline /> },
 ];
 
-const layoutStyles: Record<string, React.CSSProperties> = {
-    wrapper: {
-        display: 'flex',
-        minHeight: '100vh',
-        marginTop: '-80px',
-        paddingTop: '80px',
-    },
-    sidebar: {
-        width: '260px',
-        background: 'rgba(26, 25, 25, 0.95)',
-        backdropFilter: 'blur(20px)',
-        color: '#FFFFFE',
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'fixed',
-        top: '80px',
-        bottom: 0,
-        left: 0,
-        zIndex: 50,
-        overflowY: 'auto',
-    },
-    sidebarHeader: {
-        padding: '1.5rem',
-        borderBottom: '1px solid rgba(255,255,254,0.08)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.75rem',
-    },
-    logo: {
-        fontSize: '1.5rem',
-        color: '#F5B926',
-    },
-    title: {
-        fontFamily: "'Cinzel', serif",
-        fontSize: '0.95rem',
-        fontWeight: 600,
-        color: '#FFFFFE',
-    },
-    subtitle: {
-        fontSize: '0.7rem',
-        color: 'rgba(255,255,254,0.5)',
-        textTransform: 'uppercase' as const,
-        letterSpacing: '0.08em',
-    },
-    nav: {
-        flex: 1,
-        padding: '1rem 0.75rem',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px',
-    },
-    navLink: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.75rem',
-        padding: '0.7rem 1rem',
-        borderRadius: '10px',
-        color: 'rgba(255,255,254,0.65)',
-        textDecoration: 'none',
-        fontSize: '0.9rem',
-        fontWeight: 500,
-        transition: 'all 0.2s ease',
-    },
-    navLinkActive: {
-        background: 'linear-gradient(135deg, rgba(245,185,38,0.15), rgba(237,159,45,0.1))',
-        color: '#F5B926',
-    },
-    footer: {
-        padding: '1rem 0.75rem',
-        borderTop: '1px solid rgba(255,255,254,0.08)',
-    },
-    content: {
-        flex: 1,
-        marginLeft: '260px',
-        padding: '2rem',
-        minHeight: 'calc(100vh - 80px)',
-    },
-    roleTag: {
-        display: 'inline-block',
-        padding: '0.15rem 0.5rem',
-        borderRadius: '9999px',
-        fontSize: '0.65rem',
-        fontWeight: 600,
-        textTransform: 'uppercase' as const,
-        letterSpacing: '0.05em',
-        background: 'rgba(245,185,38,0.15)',
-        color: '#F5B926',
-        marginTop: '0.25rem',
-    },
-    userInfo: {
-        padding: '0.75rem 1rem',
-        marginBottom: '0.5rem',
-    },
-    userName: {
-        fontSize: '0.85rem',
-        fontWeight: 600,
-        color: '#FFFFFE',
-    },
-};
-
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const { user, appUser, loading, logout } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
 
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [pwModalOpen, setPwModalOpen] = useState(false);
     const [currentPw, setCurrentPw] = useState('');
     const [newPw, setNewPw] = useState('');
@@ -149,6 +59,55 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const [pwSaving, setPwSaving] = useState(false);
     const [pwError, setPwError] = useState('');
     const [pwSuccess, setPwSuccess] = useState(false);
+
+    // Detect mobile
+    useEffect(() => {
+        const checkMobile = () => {
+            const mobile = window.innerWidth <= MOBILE_BREAKPOINT;
+            setIsMobile(mobile);
+            if (mobile) {
+                setMobileMenuOpen(false);
+            }
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Persist sidebar state in localStorage (desktop only)
+    useEffect(() => {
+        const saved = localStorage.getItem('admin-sidebar-open');
+        if (saved !== null) {
+            setSidebarOpen(saved === 'true');
+        }
+    }, []);
+
+    // Close mobile menu on route change
+    useEffect(() => {
+        if (isMobile) {
+            setMobileMenuOpen(false);
+        }
+    }, [pathname, isMobile]);
+
+    const toggleSidebar = useCallback(() => {
+        if (isMobile) {
+            setMobileMenuOpen(prev => !prev);
+        } else {
+            const next = !sidebarOpen;
+            setSidebarOpen(next);
+            localStorage.setItem('admin-sidebar-open', String(next));
+        }
+    }, [isMobile, sidebarOpen]);
+
+    const closeMobileMenu = useCallback(() => {
+        setMobileMenuOpen(false);
+    }, []);
+
+    // On desktop: use expanded/collapsed width. On mobile: sidebar is overlay, no margin needed.
+    const desktopSidebarWidth = sidebarOpen ? SIDEBAR_EXPANDED_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
+    // For sidebar render: on mobile always show expanded style (full labels) when open
+    const showLabels = isMobile ? true : sidebarOpen;
+    const currentSidebarWidth = isMobile ? SIDEBAR_EXPANDED_WIDTH : desktopSidebarWidth;
 
     const resetPwForm = () => {
         setCurrentPw(''); setNewPw(''); setConfirmPw('');
@@ -210,80 +169,324 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     if (!user) return null;
 
+    // Determine if sidebar should be visible
+    const sidebarVisible = isMobile ? mobileMenuOpen : true;
+
     return (
-        <div style={layoutStyles.wrapper}>
+        <div style={{
+            display: 'flex',
+            minHeight: '100vh',
+            marginTop: '-80px',
+            paddingTop: '80px',
+        }}>
+            {/* Mobile: Floating hamburger button */}
+            {isMobile && !mobileMenuOpen && (
+                <button
+                    onClick={toggleSidebar}
+                    style={{
+                        position: 'fixed',
+                        top: '90px',
+                        left: '10px',
+                        zIndex: 60,
+                        background: 'rgba(26, 25, 25, 0.95)',
+                        backdropFilter: 'blur(10px)',
+                        border: 'none',
+                        color: '#F5B926',
+                        cursor: 'pointer',
+                        padding: '0.6rem',
+                        borderRadius: '10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '1.35rem',
+                        boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+                    }}
+                >
+                    <IoMenuOutline />
+                </button>
+            )}
+
+            {/* Mobile: Backdrop overlay */}
+            {isMobile && mobileMenuOpen && (
+                <div
+                    onClick={closeMobileMenu}
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'rgba(0,0,0,0.5)',
+                        zIndex: 49,
+                        transition: 'opacity 0.3s ease',
+                    }}
+                />
+            )}
+
             {/* Sidebar */}
-            <aside style={layoutStyles.sidebar}>
-                <div style={layoutStyles.sidebarHeader}>
-                    <GiLotusFlower style={layoutStyles.logo} />
-                    <div>
-                        <div style={layoutStyles.title}>Admin Panel</div>
-                        <div style={layoutStyles.subtitle}>Sarasavi Viharaya</div>
-                    </div>
+            <aside style={{
+                width: `${currentSidebarWidth}px`,
+                minWidth: `${currentSidebarWidth}px`,
+                background: 'rgba(26, 25, 25, 0.95)',
+                backdropFilter: 'blur(20px)',
+                color: '#FFFFFE',
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'fixed',
+                top: isMobile ? '0' : '80px',
+                bottom: 0,
+                left: isMobile
+                    ? (mobileMenuOpen ? '0' : `-${currentSidebarWidth}px`)
+                    : '0',
+                zIndex: 50,
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                transition: isMobile
+                    ? 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                    : 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}>
+                {/* Sidebar Header */}
+                <div style={{
+                    padding: showLabels ? '1.5rem' : '1.5rem 0',
+                    borderBottom: '1px solid rgba(255,255,254,0.08)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: showLabels ? 'space-between' : 'center',
+                    gap: '0.75rem',
+                    minHeight: '72px',
+                }}>
+                    {showLabels && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', overflow: 'hidden' }}>
+                            <GiLotusFlower style={{ fontSize: '1.5rem', color: '#F5B926', flexShrink: 0 }} />
+                            <div style={{ whiteSpace: 'nowrap' }}>
+                                <div style={{
+                                    fontFamily: "'Cinzel', serif",
+                                    fontSize: '0.95rem',
+                                    fontWeight: 600,
+                                    color: '#FFFFFE',
+                                }}>Admin Panel</div>
+                                <div style={{
+                                    fontSize: '0.7rem',
+                                    color: 'rgba(255,255,254,0.5)',
+                                    textTransform: 'uppercase' as const,
+                                    letterSpacing: '0.08em',
+                                }}>Sarasavi Viharaya</div>
+                            </div>
+                        </div>
+                    )}
+                    <button
+                        onClick={toggleSidebar}
+                        title={isMobile ? 'Close menu' : (sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'rgba(255,255,254,0.6)',
+                            cursor: 'pointer',
+                            padding: '0.4rem',
+                            borderRadius: '8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '1.25rem',
+                            transition: 'all 0.2s ease',
+                            flexShrink: 0,
+                        }}
+                        onMouseEnter={e => {
+                            (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,254,0.08)';
+                            (e.currentTarget as HTMLButtonElement).style.color = '#F5B926';
+                        }}
+                        onMouseLeave={e => {
+                            (e.currentTarget as HTMLButtonElement).style.background = 'none';
+                            (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,254,0.6)';
+                        }}
+                    >
+                        {isMobile ? <IoCloseOutline /> : (sidebarOpen ? <IoChevronBackOutline /> : <IoMenuOutline />)}
+                    </button>
                 </div>
 
                 {/* User Info */}
                 {appUser && (
-                    <div style={layoutStyles.userInfo}>
-                        <div style={layoutStyles.userName}>{appUser.displayName}</div>
-                        <span style={layoutStyles.roleTag}>{appUser.role.replace('_', ' ')}</span>
+                    <div style={{
+                        padding: showLabels ? '0.75rem 1rem' : '0.75rem 0.5rem',
+                        marginBottom: '0.5rem',
+                        overflow: 'hidden',
+                        textAlign: showLabels ? 'left' : 'center',
+                    }}>
+                        {showLabels ? (
+                            <>
+                                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#FFFFFE', whiteSpace: 'nowrap' }}>
+                                    {appUser.displayName}
+                                </div>
+                                <span style={{
+                                    display: 'inline-block',
+                                    padding: '0.15rem 0.5rem',
+                                    borderRadius: '9999px',
+                                    fontSize: '0.65rem',
+                                    fontWeight: 600,
+                                    textTransform: 'uppercase' as const,
+                                    letterSpacing: '0.05em',
+                                    background: 'rgba(245,185,38,0.15)',
+                                    color: '#F5B926',
+                                    marginTop: '0.25rem',
+                                }}>{appUser.role.replace('_', ' ')}</span>
+                            </>
+                        ) : (
+                            <div
+                                title={appUser.displayName}
+                                style={{
+                                    width: '32px',
+                                    height: '32px',
+                                    borderRadius: '50%',
+                                    background: 'linear-gradient(135deg, rgba(245,185,38,0.25), rgba(237,159,45,0.15))',
+                                    color: '#F5B926',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.8rem',
+                                    fontWeight: 700,
+                                    margin: '0 auto',
+                                }}
+                            >
+                                {appUser.displayName?.charAt(0)?.toUpperCase() || 'A'}
+                            </div>
+                        )}
                     </div>
                 )}
 
-                <nav style={layoutStyles.nav}>
+                <nav style={{
+                    flex: 1,
+                    padding: showLabels ? '1rem 0.75rem' : '1rem 0.5rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                }}>
                     {navItems.map(item => {
                         const isActive = pathname === item.href;
                         return (
                             <Link
                                 key={item.href}
                                 href={item.href}
+                                title={!showLabels ? item.label : undefined}
+                                onClick={isMobile ? closeMobileMenu : undefined}
                                 style={{
-                                    ...layoutStyles.navLink,
-                                    ...(isActive ? layoutStyles.navLinkActive : {}),
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: showLabels ? 'flex-start' : 'center',
+                                    gap: '0.75rem',
+                                    padding: showLabels ? '0.7rem 1rem' : '0.7rem 0',
+                                    borderRadius: '10px',
+                                    color: isActive ? '#F5B926' : 'rgba(255,255,254,0.65)',
+                                    textDecoration: 'none',
+                                    fontSize: showLabels ? '0.9rem' : '1.15rem',
+                                    fontWeight: 500,
+                                    transition: 'all 0.2s ease',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    ...(isActive ? {
+                                        background: 'linear-gradient(135deg, rgba(245,185,38,0.15), rgba(237,159,45,0.1))',
+                                    } : {}),
                                 }}
                             >
-                                {item.icon}
-                                {item.label}
+                                <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>{item.icon}</span>
+                                {showLabels && item.label}
                             </Link>
                         );
                     })}
                 </nav>
 
-                <div style={layoutStyles.footer}>
+                <div style={{
+                    padding: showLabels ? '1rem 0.75rem' : '1rem 0.5rem',
+                    borderTop: '1px solid rgba(255,255,254,0.08)',
+                }}>
                     <button
-                        onClick={() => { resetPwForm(); setPwModalOpen(true); }}
+                        onClick={() => { resetPwForm(); setPwModalOpen(true); if (isMobile) closeMobileMenu(); }}
+                        title={!showLabels ? 'Change Password' : undefined}
                         style={{
-                            ...layoutStyles.navLink,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: showLabels ? 'flex-start' : 'center',
+                            gap: '0.75rem',
+                            padding: showLabels ? '0.7rem 1rem' : '0.7rem 0',
+                            borderRadius: '10px',
+                            color: 'rgba(255,255,254,0.65)',
+                            textDecoration: 'none',
+                            fontSize: showLabels ? '0.9rem' : '1.15rem',
+                            fontWeight: 500,
+                            transition: 'all 0.2s ease',
                             border: 'none',
                             background: 'none',
                             cursor: 'pointer',
                             width: '100%',
                             marginBottom: '4px',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
                         }}
                     >
-                        <IoLockClosedOutline /> Change Password
+                        <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}><IoLockClosedOutline /></span>
+                        {showLabels && 'Change Password'}
                     </button>
-                    <Link href="/" style={{ ...layoutStyles.navLink, marginBottom: '4px' }}>
-                        <IoHomeOutline /> View Site
+                    <Link
+                        href="/"
+                        title={!showLabels ? 'View Site' : undefined}
+                        onClick={isMobile ? closeMobileMenu : undefined}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: showLabels ? 'flex-start' : 'center',
+                            gap: '0.75rem',
+                            padding: showLabels ? '0.7rem 1rem' : '0.7rem 0',
+                            borderRadius: '10px',
+                            color: 'rgba(255,255,254,0.65)',
+                            textDecoration: 'none',
+                            fontSize: showLabels ? '0.9rem' : '1.15rem',
+                            fontWeight: 500,
+                            transition: 'all 0.2s ease',
+                            marginBottom: '4px',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                        }}
+                    >
+                        <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}><IoHomeOutline /></span>
+                        {showLabels && 'View Site'}
                     </Link>
                     <button
-                        onClick={logout}
+                        onClick={() => { logout(); if (isMobile) closeMobileMenu(); }}
+                        title={!showLabels ? 'Sign Out' : undefined}
                         style={{
-                            ...layoutStyles.navLink,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: showLabels ? 'flex-start' : 'center',
+                            gap: '0.75rem',
+                            padding: showLabels ? '0.7rem 1rem' : '0.7rem 0',
+                            borderRadius: '10px',
+                            color: 'rgba(223,82,42,0.8)',
+                            textDecoration: 'none',
+                            fontSize: showLabels ? '0.9rem' : '1.15rem',
+                            fontWeight: 500,
+                            transition: 'all 0.2s ease',
                             border: 'none',
                             background: 'none',
                             cursor: 'pointer',
                             width: '100%',
-                            color: 'rgba(223,82,42,0.8)',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
                         }}
                     >
-                        <IoLogOutOutline /> Sign Out
+                        <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}><IoLogOutOutline /></span>
+                        {showLabels && 'Sign Out'}
                     </button>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main style={layoutStyles.content}>
+            <main style={{
+                flex: 1,
+                marginLeft: isMobile ? '0' : `${desktopSidebarWidth}px`,
+                padding: isMobile ? '1rem' : '2rem',
+                paddingTop: isMobile ? '3.5rem' : '2rem',
+                minHeight: 'calc(100vh - 80px)',
+                transition: 'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}>
                 {children}
             </main>
 
