@@ -9,8 +9,8 @@ import {
     IoShieldCheckmarkOutline,
     IoCreateOutline,
 } from 'react-icons/io5';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+// NOTE: User creation is handled server-side via /api/admin/create-user
+// to avoid disrupting the current admin's Firebase Auth session.
 import { useAuth, canManageUsers, isSuperAdmin, canManageRole, getAssignableRoles } from '@/lib/auth';
 import { getUsers, setUser, deleteUser as fsDeleteUser } from '@/lib/firestore';
 import Modal from '@/components/ui/Modal';
@@ -107,8 +107,21 @@ export default function AdminUsersPage() {
         setSaving(true);
         setError('');
         try {
-            const cred = await createUserWithEmailAndPassword(auth, form.email, form.password);
-            await setUser(cred.user.uid, {
+            // Create the Firebase Auth user server-side so the current admin
+            // session is NOT replaced by the newly created user's session.
+            const res = await fetch('/api/admin/create-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: form.email, password: form.password }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                setError(data.error || 'Failed to create user');
+                setSaving(false);
+                return;
+            }
+            // Write the Firestore user document with the returned UID
+            await setUser(data.uid, {
                 email: form.email,
                 displayName: form.displayName,
                 role: form.role,
@@ -120,13 +133,9 @@ export default function AdminUsersPage() {
             await loadData();
         } catch (err) {
             if (err instanceof Error) {
-                if (err.message.includes('email-already-in-use')) {
-                    setError('This email is already registered.');
-                } else if (err.message.includes('weak-password')) {
-                    setError('Password must be at least 6 characters.');
-                } else {
-                    setError(err.message);
-                }
+                setError(err.message);
+            } else {
+                setError('An unexpected error occurred.');
             }
         }
         setSaving(false);
