@@ -4,7 +4,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { IoCalendarOutline, IoTimeOutline, IoLocationOutline, IoSparkles, IoArrowForward, IoLeafOutline, IoBookOutline, IoPeopleOutline, IoHeartOutline, IoMailOutline, IoFlagOutline } from 'react-icons/io5';
-import SubscribeForm from '@/components/ui/SubscribeForm';
 import CountdownTimer from '@/components/ui/CountdownTimer';
 import { GiLotusFlower, GiTempleGate, GiMeditation } from 'react-icons/gi';
 import { getEvents, getMilestones, getPageVisibility } from '@/lib/firestore';
@@ -444,12 +443,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Subscribe Section */}
-      <section className="section">
-        <div className="container container-sm">
-          <SubscribeForm />
-        </div>
-      </section>
     </div>
   );
 }

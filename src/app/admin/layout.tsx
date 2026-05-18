@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
-import { useAuth } from '@/lib/auth';
+import { useAuth, isSuperAdmin } from '@/lib/auth';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Modal from '@/components/ui/Modal';
 import {
@@ -31,22 +31,29 @@ const SIDEBAR_EXPANDED_WIDTH = 260;
 const SIDEBAR_COLLAPSED_WIDTH = 68;
 const MOBILE_BREAKPOINT = 768;
 
-const navItems = [
-    { href: '/admin', label: 'Dashboard', icon: <IoGridOutline /> },
-    { href: '/admin/pages', label: 'Pages', icon: <IoNavigateOutline /> },
-    { href: '/admin/events', label: 'Events', icon: <IoCalendarOutline /> },
-    { href: '/admin/milestones', label: 'Milestones', icon: <IoFlagOutline /> },
-    { href: '/admin/blessings', label: 'Blessings', icon: <IoHeartOutline /> },
-    { href: '/admin/acknowledgments', label: 'Acknowledgments', icon: <IoRibbonOutline /> },
-    { href: '/admin/messages', label: 'Messages', icon: <IoMailOutline /> },
-    { href: '/admin/subscribers', label: 'Subscribers', icon: <IoNotificationsOutline /> },
-    { href: '/admin/tags', label: 'Tags', icon: <IoPricetagsOutline /> },
-    { href: '/admin/users', label: 'Users', icon: <IoPeopleOutline /> },
+// Nav items for the admin sidebar
+// superAdminOnly: true → only visible to super_admin in the sidebar
+const BASE_NAV_ITEMS = [
+    { href: '/admin', label: 'Dashboard', icon: <IoGridOutline />, superAdminOnly: false },
+    { href: '/admin/pages', label: 'Pages', icon: <IoNavigateOutline />, superAdminOnly: false },
+    { href: '/admin/events', label: 'Events', icon: <IoCalendarOutline />, superAdminOnly: false },
+    { href: '/admin/milestones', label: 'Milestones', icon: <IoFlagOutline />, superAdminOnly: false },
+    { href: '/admin/blessings', label: 'Blessings', icon: <IoHeartOutline />, superAdminOnly: false },
+    { href: '/admin/acknowledgments', label: 'Acknowledgments', icon: <IoRibbonOutline />, superAdminOnly: false },
+    { href: '/admin/messages', label: 'Messages', icon: <IoMailOutline />, superAdminOnly: true },
+    { href: '/admin/subscribers', label: 'Subscribers', icon: <IoNotificationsOutline />, superAdminOnly: true },
+    { href: '/admin/tags', label: 'Tags', icon: <IoPricetagsOutline />, superAdminOnly: false },
+    { href: '/admin/users', label: 'Users', icon: <IoPeopleOutline />, superAdminOnly: true },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const { user, appUser, loading, logout } = useAuth();
     const router = useRouter();
+
+    // Filter nav items: super_admin sees all; others skip superAdminOnly items
+    const navItems = BASE_NAV_ITEMS.filter(item =>
+        !item.superAdminOnly || isSuperAdmin(appUser?.role ?? '')
+    );
     const pathname = usePathname();
 
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -385,6 +392,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                     ...(isActive ? {
                                         background: 'linear-gradient(135deg, rgba(245,185,38,0.15), rgba(237,159,45,0.1))',
                                     } : {}),
+                                }}
+                                onMouseEnter={e => {
+                                    if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,254,0.06)';
+                                }}
+                                onMouseLeave={e => {
+                                    if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
                                 }}
                             >
                                 <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>{item.icon}</span>
